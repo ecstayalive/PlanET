@@ -1,4 +1,6 @@
-![PlanET](assets/logo.svg)
+<p align="center">
+  <img src="assets/logo.svg" alt="PlanET — Harness coding agents to write elegant, concise, maintainable code." width="520">
+</p>
 
 Software development is a systems engineering discipline. Aligning requirements is essential, but it is not enough: AI-generated code can still be cluttered, overengineered, and difficult to maintain.
 
@@ -97,7 +99,7 @@ The workspace runs locally and supports architecture diagrams, code previews, UI
 
 ## Identity and terminal display
 
-The identity pairs a simple orbital mark with the **PlanET** wordmark. The name and capitalization carry the identity even when color and graphics are unavailable. All image assets are SVG. The README uses a self-contained SVG with a transparent background through standard Markdown image syntax. Terminal output uses text or a tiled wordmark.
+The identity pairs a simple orbital mark with the **PlanET** wordmark. The name and capitalization carry the identity even when color and graphics are unavailable. All image assets are SVG. The README centers a self-contained, transparent SVG banner with a tightly fitted canvas. Terminal output uses text or a tiled wordmark.
 
 - [Light logo](skills/planet-visual/public/logo.svg), [dark logo](assets/logo-dark.svg), and [monochrome logo](assets/logo-mono.svg).
 - [Standalone icon](assets/icon.svg) and [monochrome icon](assets/icon-mono.svg).

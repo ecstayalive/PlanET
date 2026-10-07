@@ -22,7 +22,7 @@ the wordmark's teal-to-sage-to-gold gradient.
 | [logo.svg](../skills/planet-visual/public/logo.svg) | Light backgrounds; shared with the self-contained visual skill |
 | [logo-dark.svg](logo-dark.svg) | Dark backgrounds |
 | [logo-mono.svg](logo-mono.svg) | Single-color reproduction; default dark ink |
-| [icon.svg](icon.svg) | Square avatar or app icon on light backgrounds |
+| [icon.svg](icon.svg) | Standalone orbital mark on light backgrounds |
 | [icon-mono.svg](icon-mono.svg) | Single-color icon |
 | [preview.html](preview.html) | Open locally to compare graphical and terminal treatments |
 | [preview.svg](preview.svg) | Self-contained vector overview of the identity and terminal tiles |
@@ -30,7 +30,10 @@ the wordmark's teal-to-sage-to-gold gradient.
 | [visual-decision.svg](visual-decision.svg) | Actual visual workspace export: comparable choices and explicit confirmation |
 
 All images are self-contained SVGs. All logos and icons have transparent
-backgrounds. The vector overview also has a transparent outer canvas, with colored
+backgrounds, no surrounding border, and a canvas fitted to the visible artwork.
+Each variant centers its content and keeps a one-unit allowance to avoid clipping
+strokes at the edge. Display logos at their natural aspect ratio rather than
+adding fixed-height image frames. The vector overview also has a transparent outer canvas, with colored
 sample panels to demonstrate light and dark surfaces. Wordmark letters are paths, so rendering
 does not depend on installed fonts. The lettering is derived from Lato Bold by
 Łukasz Dziedzic (SIL Open Font License); no font binaries are bundled.

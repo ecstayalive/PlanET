@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="330" height="88" viewBox="0 12 330 88" role="img" aria-labelledby="title" version="1.1">
+<svg xmlns="http://www.w3.org/2000/svg" width="293.164" height="56" viewBox="16.7042 28 293.164 56" role="img" aria-labelledby="title" version="1.1" preserveAspectRatio="xMidYMid meet">
   <title id="title">PlanET</title>
   <defs><linearGradient id="planet-wordmark" gradientUnits="userSpaceOnUse" x1="123" y1="29" x2="285" y2="110"><stop offset="0" stop-color="#81b4ae" /><stop offset="0.55" stop-color="#a4bba4" /><stop offset="1" stop-color="#d0b991" /></linearGradient></defs><g fill="none" stroke-linecap="round">
     <path style="stroke:#81b4ae;stroke-width:4" d="M 81,56 A 25,25 0 0 1 56,81 25,25 0 0 1 31,56 25,25 0 0 1 56,31 25,25 0 0 1 81,56 Z" />

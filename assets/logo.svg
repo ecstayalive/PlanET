@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="600" height="180" viewBox="0 0 600 180" role="img" aria-labelledby="banner-title banner-description" version="1.1" id="svg12">
+<svg xmlns="http://www.w3.org/2000/svg" width="412.487" height="118.692" viewBox="94.0085 35.8636 412.487 118.692" role="img" aria-labelledby="banner-title banner-description" version="1.1" id="svg12" preserveAspectRatio="xMidYMid meet">
   <defs id="defs12" />
-  <svg width="408" height="108" viewBox="0 12 330 88" role="img" aria-labelledby="title" version="1.1" x="96" y="16" id="svg11">
+  <g transform="matrix(1.227272727 0 0 1.227272727 99.8555 1.272727273)" aria-labelledby="title">
     <title id="title">PlanET</title>
     <defs id="defs3">
       <linearGradient id="planet-wordmark" gradientUnits="userSpaceOnUse" x1="123" y1="29" x2="285" y2="110">
@@ -21,7 +21,7 @@
       <path d="m 249.88795,37.576 v 12.832 h 16.192 v 6.624 h -16.192 V 70.12 h 20.544 V 77 h -29.184 V 30.728 h 29.184 v 6.848 z" id="path10" />
       <path d="M 308.868,37.8 H 294.916 V 77 h -8.608 V 37.8 h -13.952 v -7.072 h 36.512 z" id="path11" />
     </g>
-  </svg>
+  </g>
   <title id="banner-title">PlanET</title>
   <desc id="banner-description">Harness coding agents to write elegant, concise, maintainable code.</desc>
   <defs id="defs6">
