@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PlanET · Identity</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #f4f5ef; color: #203339; font-family: system-ui,sans-serif; }
+  main { max-width: 1120px; padding: 48px; margin: auto; }
+  .eyebrow { font-size: 11px; letter-spacing: 3px; color: #367060; }
+  h1 { font-weight: 550; font-size: 34px; letter-spacing: -1px; margin: 14px 0; }
+  .intro { color: #607079; line-height: 1.6; margin-bottom: 32px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .card { border: 1px solid #dce3dc; border-radius: 18px; background: #fff; padding: 28px; min-width: 0; }
+  .label { font-size: 11px; letter-spacing: 2px; color: #71827a; margin-bottom: 24px; }
+  .art { height: 125px; display: flex; align-items: center; justify-content: center; }
+  .art img { width: 330px; max-width: 100%; }
+  .dark { background: #142925; border-color: #142925; }
+  .dark .label { color: #aec4b9; }
+  .icons { display: flex; align-items: center; gap: 28px; }
+  .icons img { width: 72px; height: 72px; }
+  .caption { color: #607079; font-size: 13px; line-height: 1.6; }
+  .terminal { grid-column: 1/-1; background: #192326; border-color: #192326; color: #e7eee9; }
+  .terminal .label { color: #a5b6af; }
+  .terminal-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  pre { font-family: 'DejaVu Sans Mono',monospace; font-size: 16px; line-height: 1.18; margin: 16px 0; overflow: auto; }
+  
+  .terminal .caption { color: #a5b6af; }
+  .compact { font-size: 24px; }
+  footer { color: #7e8d85; font-size: 12px; margin-top: 28px; }
+  @media (max-width: 760px) { main { padding: 24px; } .grid,.terminal-grid { grid-template-columns: 1fr; } pre { font-size: 12px; } }
+</style>
+<main>
+  <div class="eyebrow">PLANET / IDENTITY 0.0.1</div>
+  <h1>Clear by design.</h1>
+  <p class="intro">One name. A quiet orbital mark. Teal, sage, and warm gold. A quiet gradient shared across the wordmark.</p>
+  <div class="grid">
+    <section class="card"><div class="label">01 / LIGHT</div><div class="art"><img src="../skills/planet-visual/public/logo.svg" alt="PlanET light logo"></div></section>
+    <section class="card dark"><div class="label">02 / DARK</div><div class="art"><img src="logo-dark.svg" alt="PlanET dark logo"></div></section>
+    <section class="card"><div class="label">03 / ONE COLOR</div><div class="art"><img src="logo-mono.svg" alt="PlanET monochrome logo"></div></section>
+    <section class="card"><div class="label">04 / ORBITAL MARK</div><div class="icons"><img src="icon.svg" alt="Color icon"><img src="icon-mono.svg" alt="Monochrome icon"></div><p class="caption">A standalone mark for avatars and graphical surfaces.</p></section>
+    <section class="card terminal"><div class="label">05 / TERMINAL</div><div class="terminal-grid">
+      <div><pre class="compact"><span style="color:#81b4ae">P</span><span style="color:#81b4ae">l</span><span style="color:#a4bba4">a</span><span style="color:#a4bba4">n</span><span style="color:#d0b991">E</span><span style="color:#d0b991">T</span></pre><p class="caption">Compact by default. Three coordinated tones, shared across letters and strokes.</p><pre>PlanET</pre><p class="caption">Plain text for logs, narrow panes, and NO_COLOR.</p></div>
+      <div><pre id="banner"><span style="background:#81b4ae">  </span><span style="background:#81b4ae">  </span><span style="background:#81b4ae">  </span><span style="background:#81b4ae">  </span>    <span style="background:#81b4ae">  </span><span style="background:#81b4ae">  </span>                            <span style="background:#a4bba4">  </span><span style="background:#a4bba4">  </span><span style="background:#a4bba4">  </span><span style="background:#a4bba4">  </span><span style="background:#a4bba4">  </span>  <span style="background:#a4bba4">  </span><span style="background:#a4bba4">  </span><span style="background:#a4bba4">  </span><span style="background:#a4bba4">  </span><span style="background:#a4bba4">  </span>
+<span style="background:#81b4ae">  </span>      <span style="background:#81b4ae">  </span>    <span style="background:#81b4ae">  </span>                            <span style="background:#a4bba4">  </span>              <span style="background:#a4bba4">  </span>    
+<span style="background:#81b4ae">  </span>      <span style="background:#81b4ae">  </span>    <span style="background:#81b4ae">  </span>      <span style="background:#a4bba4">  </span><span style="background:#a4bba4">  </span><span style="background:#a4bba4">  </span>    <span style="background:#a4bba4">  </span>  <span style="background:#a4bba4">  </span><span style="background:#a4bba4">  </span>    <span style="background:#a4bba4">  </span>              <span style="background:#a4bba4">  </span>    
+<span style="background:#81b4ae">  </span><span style="background:#81b4ae">  </span><span style="background:#81b4ae">  </span><span style="background:#81b4ae">  </span>      <span style="background:#a4bba4">  </span>            <span style="background:#a4bba4">  </span>  <span style="background:#a4bba4">  </span><span style="background:#a4bba4">  </span>    <span style="background:#a4bba4">  </span>  <span style="background:#a4bba4">  </span><span style="background:#a4bba4">  </span><span style="background:#a4bba4">  </span><span style="background:#a4bba4">  </span>        <span style="background:#d0b991">  </span>    
+<span style="background:#a4bba4">  </span>            <span style="background:#a4bba4">  </span>      <span style="background:#a4bba4">  </span><span style="background:#a4bba4">  </span><span style="background:#a4bba4">  </span><span style="background:#a4bba4">  </span>  <span style="background:#a4bba4">  </span>      <span style="background:#a4bba4">  </span>  <span style="background:#d0b991">  </span>              <span style="background:#d0b991">  </span>    
+<span style="background:#a4bba4">  </span>            <span style="background:#a4bba4">  </span>    <span style="background:#a4bba4">  </span>      <span style="background:#a4bba4">  </span>  <span style="background:#d0b991">  </span>      <span style="background:#d0b991">  </span>  <span style="background:#d0b991">  </span>              <span style="background:#d0b991">  </span>    
+<span style="background:#a4bba4">  </span>          <span style="background:#a4bba4">  </span><span style="background:#a4bba4">  </span><span style="background:#a4bba4">  </span>    <span style="background:#d0b991">  </span><span style="background:#d0b991">  </span><span style="background:#d0b991">  </span><span style="background:#d0b991">  </span>  <span style="background:#d0b991">  </span>      <span style="background:#d0b991">  </span>  <span style="background:#d0b991">  </span><span style="background:#d0b991">  </span><span style="background:#d0b991">  </span><span style="background:#d0b991">  </span><span style="background:#d0b991">  </span>      <span style="background:#d0b991">  </span>    
+</pre><p class="caption">Solid color tiles. No special font or image protocol.</p></div>
+    </div></section>
+  </div>
+  <footer>Harness coding agents to write elegant, concise, maintainable code.</footer>
+</main>
+</html>

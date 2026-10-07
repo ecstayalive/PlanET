@@ -1,0 +1,20 @@
+{
+  "id": "workspace-navigation",
+  "mode": "decision",
+  "title": "Choose the navigation that fits your workspace.",
+  "summary": "This choice affects how people find features and how much space remains for their work. Both layouts use the same navigation capability.",
+  "choices": [
+    {
+      "id": "sidebar",
+      "label": "Sidebar",
+      "description": "Recommended for a workspace with growing sections. Keep navigation visible and easy to scan.",
+      "html": "<div style=\"display:flex;height:265px;border:1px solid #dce3dc;border-radius:10px;overflow:hidden;print-color-adjust:exact;-webkit-print-color-adjust:exact;font-family:system-ui,sans-serif;font-size:12px;color:#203339;\"><aside style=\"width:100px;background:#edf3ec;padding:18px 12px\"><strong>Workspace</strong><div style=\"margin-top:22px;background:#dce9dc;padding:9px;border-radius:5px\">Overview</div><div style=\"padding:10px\">Projects</div><div style=\"padding:10px\">Files</div><div style=\"padding:10px\">Settings</div></aside><main style=\"flex:1;background:#fafbf8;padding:20px\"><span style=\"color:#6e907f\">PROJECT OVERVIEW</span><h3 style=\"font-size:18px;margin:12px 0 20px\">Everything in view.</h3><div style=\"background:white;border:1px solid #e1e7dd;padding:16px;border-radius:7px\">Active projects<br><strong style=\"font-size:24px;line-height:2\">12</strong><br><span style=\"color:#62776d\">Persistent navigation</span></div></main></div>"
+    },
+    {
+      "id": "topbar",
+      "label": "Top navigation",
+      "description": "A compact option for a small, stable set of sections. Give the content more horizontal room.",
+      "html": "<div style=\"height:265px;border:1px solid #dce3dc;border-radius:10px;overflow:hidden;print-color-adjust:exact;-webkit-print-color-adjust:exact;font-family:system-ui,sans-serif;font-size:12px;color:#203339;\"><nav style=\"background:#edf3ec;padding:16px 12px;display:flex;gap:14px;align-items:center\"><strong>Workspace</strong><span style=\"color:#367060\">Overview</span><span>Projects</span><span>Files</span></nav><main style=\"background:#fafbf8;height:220px;padding:20px\"><span style=\"color:#6e907f\">PROJECT OVERVIEW</span><h3 style=\"font-size:18px;margin:12px 0 20px\">Room for the content.</h3><div style=\"background:white;border:1px solid #e1e7dd;padding:16px;border-radius:7px\">Active projects <strong style=\"font-size:24px;margin-left:18px\">12</strong><p style=\"color:#62776d;margin-bottom:0\">A wider working area</p></div></main></div>"
+    }
+  ]
+}

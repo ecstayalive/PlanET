@@ -1,0 +1,42 @@
+:root { color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #203339; background: #f7f8f3; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+header { max-width: 1200px; margin: auto; padding: 28px 32px; display: flex; align-items: center; gap: 24px; border-bottom: 1px solid #dce3dc; }
+.brand { display: flex; flex-shrink: 0; align-items: center; }
+.brand img { display: block; width: 180px; height: 48px; }
+.workspace-label { margin-left: 12px; padding-left: 24px; border-left: 1px solid #d5dfd5; font-size: 10px; letter-spacing: 2px; color: #869589; }
+#connection { margin-left: auto; font-size: 12px; color: #62776d; padding: 7px 12px; background: #eef3ea; border: 1px solid #dfe8da; border-radius: 30px; }
+#connection::before { content: ''; display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: currentColor; margin-right: 8px; vertical-align: middle; }
+main { max-width: 1200px; margin: 48px auto 56px; padding: 0 32px; }
+.eyebrow { color: #367060; font-size: 13px; font-weight: 650; letter-spacing: 2px; }
+h1 { margin: 16px 0; max-width: 900px; font-size: clamp(28px, 4vw, 44px); font-weight: 550; line-height: 1.2; letter-spacing: -1.8px; }
+.summary { max-width: 760px; color: #607079; line-height: 1.8; margin: 0 0 32px; white-space: pre-wrap; }
+.panels, #choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.card { padding: 26px; border: 1px solid #dce3dc; border-radius: 16px; background: #fff; min-width: 0; box-shadow: 0 2px 4px #25413203; }
+.flow-card { grid-column: 1 / -1; }
+.flow-card h2 { display: flex; align-items: center; gap: 10px; }
+.flow-card h2::before { content: ''; width: 7px; height: 7px; border-radius: 2px; background: #719680; }
+.diagram { margin-top: 20px; overflow: auto; border: 1px solid #e5ebe0; border-radius: 12px; background-color: #f9faf6; background-image: radial-gradient(#dce6d9 .7px, transparent .7px); background-size: 16px 16px; padding: 22px; }
+.diagram svg { width: 100%; height: auto; display: block; }
+.diagram-hint { display: none; }
+h2 { font-size: 17px; margin: 0 0 14px; font-weight: 650; }
+.card p { font-size: 14px; line-height: 1.8; color: #607079; white-space: pre-wrap; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; background: #f1f4f0; padding: 16px; border-radius: 8px; line-height: 1.6; font-size: 13px; }
+iframe { width: 100%; height: 320px; border: 1px solid #e5e9e3; border-radius: 8px; background: white; }
+form { margin-top: 32px; }
+fieldset { border: 0; padding: 0; margin: 0 0 24px; }
+legend { margin-bottom: 16px; font-weight: 650; }
+label.card { cursor: pointer; transition: border-color .15s, background .15s; }
+label.card:hover { border-color: #8aa99a; }
+label.card:has(input:checked) { border-color: #367060; background: #f0f7f2; outline: 1px solid #367060; }
+input[type=radio] { accent-color: #367060; float: right; margin-top: 3px; width: 18px; height: 18px; }
+label[for=feedback] { display: block; color: #607079; font-size: 14px; margin-bottom: 12px; }
+textarea { width: 100%; max-width: 720px; display: block; border: 1px solid #cfdacf; border-radius: 10px; padding: 14px; font: inherit; background: white; resize: vertical; }
+button { border: 0; border-radius: 8px; padding: 12px 24px; background: #285d4c; color: white; font: inherit; font-size: 14px; margin-top: 18px; cursor: pointer; }
+button:disabled { opacity: .55; cursor: default; }
+:focus-visible { outline: 3px solid #b18149; outline-offset: 3px; }
+#message { font-size: 14px; color: #607079; margin-top: 24px; line-height: 1.6; }
+footer { max-width: 1200px; margin: auto; padding: 24px 32px; border-top: 1px solid #dce3dc; color: #839086; font-size: 11px; display: flex; justify-content: space-between; gap: 20px; }
+[hidden] { display: none !important; }
+@media (max-width: 720px) { .panels, #choices { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 600px) { header { padding: 22px 20px; } .workspace-label { display: none; } main { padding: 0 20px; margin-top: 32px; } .card { padding: 18px; } .diagram { padding: 12px; } .diagram-hint { display: block; font-size: 11px !important; margin-bottom: 0; } footer { padding: 24px 20px; flex-direction: column; gap: 8px; } }

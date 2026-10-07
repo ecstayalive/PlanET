@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="112" height="112" viewBox="0 0 112 112" role="img" aria-labelledby="title"><title id="title">PlanET orbital mark</title><g fill="none" stroke-linecap="round">
+    <path style="stroke:#397d80;stroke-width:4" d="M 81,56 A 25,25 0 0 1 56,81 25,25 0 0 1 31,56 25,25 0 0 1 56,31 25,25 0 0 1 81,56 Z" />
+    <path transform="rotate(-28 56 56)" style="stroke:#a48b64;stroke-width:3" d="M 97,56 A 41,14 0 0 1 56,70 41,14 0 0 1 15,56 41,14 0 0 1 56,42 41,14 0 0 1 97,56 Z" />
+    </g>
+  </svg>

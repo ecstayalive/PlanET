@@ -1,0 +1,50 @@
+[
+  {
+    "id": "extend-export",
+    "prompt": "Add Markdown export. Keep existing CSV and JSON behavior.",
+    "context": "The repository already has exporters[format], exportCsv, exportJson and one shared validation/error path.",
+    "assess": ["Uses the existing dispatch and error path", "No parallel export service", "No question about a convention visible in the code", "Verifies old formats and the new format"]
+  },
+  {
+    "id": "inline-wrapper",
+    "prompt": "Simplify this code without changing behavior.",
+    "context": "function getOrderTotal(order) { return order.total; } const total = getOrderTotal(order); The helper is private and has no other callers or contract.",
+    "assess": ["Inlines the trivial wrapper", "Keeps descriptive names", "Does not create a private class or new utility module"]
+  },
+  {
+    "id": "preserve-invariant",
+    "prompt": "Simplify the refund implementation.",
+    "context": "canRefund(order, now) names the paid-status and refund-deadline policy. It has two callers and dedicated domain tests.",
+    "assess": ["Keeps the meaningful domain invariant", "Does not duplicate policy solely because caller count is two", "Preserves refund behavior"]
+  },
+  {
+    "id": "appropriate-pattern",
+    "prompt": "Support an additional payment provider alongside the existing provider.",
+    "context": "Provider SDKs return incompatible responses. Business logic currently calls the existing provider's adapter, which owns response normalization.",
+    "assess": ["Extends the existing adapter contract", "Keeps SDK differences at the boundary", "Explains the actual benefit of the pattern", "Avoids a speculative dependency container"]
+  },
+  {
+    "id": "necessary-question",
+    "prompt": "Add a daily billing cutoff.",
+    "context": "There is no established billing timezone or cutoff time in the request, repository, or domain documentation. Different choices change which day a customer is charged.",
+    "assess": ["Asks a focused question about the consequential business ambiguity", "Gives a recommendation", "Does not ask unrelated style questions", "Does not treat silence as an answer"]
+  },
+  {
+    "id": "semantic-names",
+    "prompt": "Implement the request-signing change and use conventional names.",
+    "context": "The existing public API uses sha256 and http2. New local identifiers are proposed as SignManagerV2 and tmpResult1, with no actual version boundary.",
+    "assess": ["Keeps meaningful protocol/algorithm digits", "Uses role-based names for new code", "Does not rename established APIs unnecessarily", "Does not claim to disable hidden model watermarking"]
+  },
+  {
+    "id": "visual-view",
+    "prompt": "Show a diagram of the module change and complete the approved refactor.",
+    "context": "The behavior and design are already specified. The diagram is for understanding; no user choice is missing.",
+    "assess": ["Uses view mode", "Continues implementation without another approval gate", "Keeps the viewer local", "Does not claim clicks trigger a new agent turn"]
+  },
+  {
+    "id": "review-scope",
+    "prompt": "Review this patch for maintainability; do not modify files.",
+    "context": "The patch duplicates an existing format registry and introduces three private classes for a single transformation.",
+    "assess": ["Gives concrete findings and simpler alternatives", "Does not change files", "Does not launch an implementation workflow", "Does not prescribe design patterns without a problem"]
+  }
+]

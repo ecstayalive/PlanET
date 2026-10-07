@@ -1,0 +1,13 @@
+{
+  "name": "planet",
+  "description": "PlanET engineering quality plugin for coding agents.",
+  "owner": { "name": "PlanET" },
+  "plugins": [
+    {
+      "name": "planet",
+      "version": "0.0.1",
+      "source": "./",
+      "description": "Go beyond requirement alignment: elegant, concise, maintainable code with fewer interruptions."
+    }
+  ]
+}

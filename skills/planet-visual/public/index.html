@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PlanET</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="/app.js" type="module"></script>
+  </head>
+  <body>
+    <header>
+      <div class="brand"><img src="/logo.svg" alt="PlanET" width="180" height="48"></div>
+      <span class="workspace-label">VISUAL WORKSPACE</span>
+      <span id="connection" role="status">Connecting</span>
+    </header>
+    <main>
+      <p class="eyebrow" id="mode">DESIGN VIEW</p>
+      <h1 id="title">A clearer view of the work.</h1>
+      <p class="summary" id="summary">Designs, architecture, and previews will appear here.</p>
+      <section class="panels" id="panels" aria-label="Design content"></section>
+      <form id="decision" hidden>
+        <fieldset id="choices"><legend>Choose a direction</legend></fieldset>
+        <label for="feedback">Add a note, or describe your preferred direction</label>
+        <textarea id="feedback" maxlength="4000" rows="3" placeholder="Share your thoughts"></textarea>
+        <button id="confirm" type="submit">Confirm choice</button>
+      </form>
+      <p id="message" role="status" aria-live="polite"></p>
+    </main>
+    <footer><span>Harness coding agents to write elegant, concise, maintainable code.</span><span>PlanET · Engineering taste</span></footer>
+  </body>
+</html>

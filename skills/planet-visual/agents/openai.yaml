@@ -1,0 +1,6 @@
+interface:
+  display_name: "PlanET Visual"
+  short_description: "Show designs and previews with deliberate decisions"
+  default_prompt: "Use $planet-visual to show this design and request only necessary decisions."
+policy:
+  allow_implicit_invocation: true

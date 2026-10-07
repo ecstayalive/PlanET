@@ -1,0 +1,33 @@
+{
+  "id": "export-design",
+  "mode": "view",
+  "title": "Extend the capability. Keep the simplicity.",
+  "summary": "Add Markdown export through the existing dispatch path. One owner for validation, one error contract, and no parallel pipeline.",
+  "panels": [
+    {
+      "title": "One path, a useful extension point",
+      "diagram": {
+        "direction": "right",
+        "nodes": [
+          { "id": "request", "label": "Export request", "detail": "The existing public API", "kind": "source" },
+          { "id": "validate", "label": "Validate & dispatch", "detail": "Reuse the current contract", "kind": "process" },
+          { "id": "existing", "label": "CSV / JSON", "detail": "Preserve current behavior", "kind": "result" },
+          { "id": "markdown", "label": "Markdown", "detail": "Add one focused exporter", "kind": "result" }
+        ],
+        "edges": [
+          { "from": "request", "to": "validate" },
+          { "from": "validate", "to": "existing", "label": "existing" },
+          { "from": "validate", "to": "markdown", "label": "new format" }
+        ]
+      }
+    },
+    {
+      "title": "A small change with a clear home",
+      "code": "const exporters = {\n  csv: exportCsv,\n  json: exportJson,\n  markdown: exportMarkdown,\n};"
+    },
+    {
+      "title": "Why this design fits",
+      "text": "Extend the registry already used by the system. Keep validation, streaming, and errors in the existing path. A new framework would add complexity without solving a current problem."
+    }
+  ]
+}

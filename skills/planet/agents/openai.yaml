@@ -1,0 +1,6 @@
+interface:
+  display_name: "PlanET"
+  short_description: "Clear design, simple code, fewer interruptions"
+  default_prompt: "Use $planet to implement this change with the simplest suitable design."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,54 @@
+{
+  "name": "planet",
+  "version": "0.0.1",
+  "description": "Software development is systems engineering. PlanET goes beyond requirement alignment to help coding agents write elegant, concise, maintainable code through suitable design patterns, reuse, simplification, and fewer interruptions.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "keywords": [
+    "pi-package",
+    "agent-skills",
+    "code-quality",
+    "design"
+  ],
+  "files": [
+    "plugin.json",
+    ".claude-plugin",
+    ".codex-plugin",
+    "assets",
+    "hooks",
+    "extensions",
+    "skills",
+    "scripts",
+    "tests",
+    "evals",
+    "AGENTS.md",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "scripts": {
+    "test": "node --test",
+    "check": "node scripts/check.mjs",
+    "visual": "node skills/planet-visual/scripts/serve.mjs",
+    "logo": "node scripts/logo.mjs"
+  },
+  "pi": {
+    "extensions": [
+      "./extensions/planet.mjs"
+    ],
+    "skills": [
+      "./skills"
+    ]
+  },
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/ecstayalive/PlanET#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ecstayalive/PlanET.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ecstayalive/PlanET/issues"
+  }
+}
