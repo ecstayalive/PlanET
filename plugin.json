@@ -9,9 +9,15 @@
       "interface": {
         "displayName": "PlanET",
         "shortDescription": "Clear design, simple code, fewer interruptions",
+        "logo": "./assets/icon.svg",
+        "composerIcon": "./assets/icon.svg",
         "defaultPrompt": [
           "Use PlanET to implement this change with the simplest suitable design."
         ]
+      },
+      "presentation": {
+        "logo": "./assets/icon.svg",
+        "icon": "./assets/icon.svg"
       }
     }
   },

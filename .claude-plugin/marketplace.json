@@ -7,6 +7,7 @@
       "name": "planet",
       "version": "0.0.1",
       "source": "./",
+      "icon": "./assets/icon.svg",
       "description": "Go beyond requirement alignment: elegant, concise, maintainable code with fewer interruptions."
     }
   ]

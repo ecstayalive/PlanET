@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import { existsSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
@@ -48,4 +50,18 @@ test('Pi preserves a prior forced prompt and appends stable guidance only once',
   assert.ok(output.startsWith(event.systemPrompt));
   assert.equal(run({ ...event, systemPrompt: output }), undefined);
   assert.deepEqual(event.systemPromptOptions.sections, {});
+});
+
+test('Codex and Agent Plugin manifests advertise existing brand icon assets', async () => {
+  const pluginManifest = JSON.parse(await readFile(fileURLToPath(new URL('../plugin.json', import.meta.url)), 'utf8'));
+  const codexManifest = JSON.parse(await readFile(fileURLToPath(new URL('../.codex-plugin/plugin.json', import.meta.url)), 'utf8'));
+
+  const openaiInterface = pluginManifest.extensions?.['com.openai']?.interface;
+  assert.equal(openaiInterface?.logo, './assets/icon.svg');
+  assert.equal(openaiInterface?.composerIcon, './assets/icon.svg');
+  assert.ok(existsSync(fileURLToPath(new URL('../assets/icon.svg', import.meta.url))));
+
+  assert.equal(codexManifest.icon, './assets/icon.svg');
+  assert.equal(codexManifest.interface?.logo, './assets/icon.svg');
+  assert.equal(codexManifest.interface?.composerIcon, './assets/icon.svg');
 });

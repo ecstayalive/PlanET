@@ -5,6 +5,7 @@
   "author": {
     "name": "PlanET"
   },
+  "icon": "./assets/icon.svg",
   "license": "Apache-2.0",
   "homepage": "https://github.com/ecstayalive/PlanET#readme",
   "repository": "https://github.com/ecstayalive/PlanET"

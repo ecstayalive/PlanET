@@ -20,7 +20,13 @@ async function inspect(directory) {
 await inspect(root);
 for (const path of files) {
   const body = await readFile(path, 'utf8');
-  if (path.endsWith('.json')) JSON.parse(body);
+  if (path.endsWith('.json')) {
+    try {
+      JSON.parse(body);
+    } catch (error) {
+      assert.fail(`Invalid JSON in ${path}: ${error.message}`);
+    }
+  }
   if (/\.(mjs|js)$/.test(path)) {
     const result = spawnSync(process.execPath, ['--check', path], { encoding: 'utf8' });
     assert.equal(result.status, 0, result.stderr);
@@ -42,7 +48,13 @@ for (const path of files) {
 }
 const manifests = await Promise.all([
   'package.json', 'plugin.json', '.claude-plugin/plugin.json', '.codex-plugin/plugin.json',
-].map(async path => JSON.parse(await readFile(resolve(root, path), 'utf8'))));
+].map(async path => {
+  try {
+    return JSON.parse(await readFile(resolve(root, path), 'utf8'));
+  } catch (error) {
+    assert.fail(`Invalid manifest in ${path}: ${error.message}`);
+  }
+}));
 for (const manifest of manifests) {
   assert.equal(manifest.name, 'planet');
   assert.equal(manifest.version, manifests[0].version);
@@ -50,5 +62,13 @@ for (const manifest of manifests) {
 }
 assert.equal(manifests[3].skills, './skills/');
 assert.deepEqual(manifests[0].pi.skills, ['./skills']);
-validateScreen(JSON.parse(await readFile(resolve(root, 'skills/planet-visual/assets/example.json'), 'utf8')));
+assert.ok(files.includes(resolve(root, manifests[1].extensions['com.openai'].interface.logo)), 'Missing plugin logo');
+assert.ok(files.includes(resolve(root, manifests[3].icon)), 'Missing codex icon');
+let exampleScreen;
+try {
+  exampleScreen = JSON.parse(await readFile(resolve(root, 'skills/planet-visual/assets/example.json'), 'utf8'));
+} catch (error) {
+  assert.fail(`Invalid example screen JSON: ${error.message}`);
+}
+validateScreen(exampleScreen);
 console.log(`Checked ${files.length} files: manifests, skill metadata, references, JavaScript syntax, and visual example.`);
