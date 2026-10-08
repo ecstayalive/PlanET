@@ -32,13 +32,13 @@ Follow the host's instructions, repository conventions, user scope, and permissi
    failure behavior, and compatibility around the change. Keep coherent modules
    and explicit contracts. Preserve real extension points; do not build frameworks
    for hypothetical future requirements. Fix the underlying cause within scope.
-5. **Ask only necessary, consequential questions.** Resolve repository facts by
-   inspection and ordinary engineering choices by judgment. Ask only when missing
-   information materially affects product behavior, data meaning, compatibility,
-   or an action's authorization and cannot be reasonably inferred. Batch related
-   questions, give a recommendation, and continue independent work while waiting.
-   A required answer is not supplied by silence. Do not repeatedly ask to continue
-   work already authorized or impose routine design/plan approval ceremonies.
+5. **Minimize interruption, align on consequential architecture.** Resolve repository
+   facts by inspection and make ordinary engineering choices independently. Do not
+   interrupt for trivial implementation details. However, distinguish task scale:
+   for small edits or verifications, proceed autonomously; for substantial new
+   features or major structural overhauls with real architectural trade-offs, discuss
+   and align on the proposed design with the user before writing code. When asking,
+   batch related questions, provide a clear recommendation, and state trade-offs.
 6. **Use conventional, descriptive names.** Functions describe actions; classes
    and variables describe their actual roles using the project's domain vocabulary.
    Prefer established software terminology. Avoid meaningless numeric suffixes,
@@ -51,9 +51,13 @@ Follow the host's instructions, repository conventions, user scope, and permissi
 
 - **Inspect:** Read local instructions, the relevant implementation, its callers,
   and existing checks. Identify the owner of the behavior before adding code.
-- **Decide:** Choose the simplest change consistent with the system. For a bounded
-  edit, proceed directly. For a consequential structural change, briefly state the
-  chosen design and its reason, then continue within existing authorization.
+- **Decide & Classify:** Determine task scale and blast radius before modifying code:
+  - **Bounded edit or verification:** Choose the simplest design consistent with the
+    system and proceed directly to implementation without approval ceremonies.
+  - **Substantial feature or structural overhaul:** Formulate a concise design
+    proposal outlining the recommended approach, affected seams, and meaningful
+    trade-offs. Present and discuss the plan with the user first, proceeding to
+    implementation only once the direction is agreed upon.
 - **Implement:** Extend the existing path. Keep logic near its owner, avoid
   redundant state and dependencies, and preserve behavior outside the request.
 - **Simplify:** Review the actual diff. Remove needless indirection, wrappers,
@@ -63,10 +67,12 @@ Follow the host's instructions, repository conventions, user scope, and permissi
   first and add regression coverage for meaningful behavior or demonstrated risks.
   Report what ran and any remaining uncertainty. Do not manufacture test evidence.
 
-These are internal working habits, not mandatory user-facing stages. Do not require
-plan files, interviews, commits, worktrees, or subagents for every task. If another
-workflow already manages execution, apply these quality rules within it rather
-than starting a competing workflow. A review-only request stays review-only.
+These are internal working habits, not mandatory ceremonies for small tasks. Do not
+require plan files, interviews, commits, or subagents for bounded edits. For
+large additions or architectural refactors, explicit plan alignment prevents costly
+rework. If another workflow already manages execution, apply these quality rules
+within it rather than starting a competing workflow. A review-only request stays
+review-only.
 
 ## Conditional resources
 

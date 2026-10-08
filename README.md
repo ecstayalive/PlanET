@@ -54,7 +54,7 @@ Use your agent normally after installation. With startup loading enabled, PlanET
 | Codex | `$planet:planet` | `$planet:planet-visual` |
 | Pi | `/skill:planet` | `/skill:planet-visual` |
 
-The agent inspects the existing implementation, chooses the simplest suitable design, implements the change, simplifies it, and verifies the result. It asks about consequential ambiguity and uses the visual workspace when seeing a design helps.
+The agent inspects the existing implementation and distinguishes task scale: for localized edits and quick verification, it implements the change directly; for substantial features or structural overhauls, it aligns on a proposed design with you before writing code. It asks about consequential ambiguity and uses the visual workspace when seeing a design or comparing choices helps.
 
 For example: **“Add Markdown export using the existing export pipeline.”** PlanET guides the agent to find the current implementation, preserve its contracts, and extend it with a focused change. To inspect the design, add **“Show how the new exporter fits into the existing flow.”**
 
@@ -66,7 +66,7 @@ In Codex, you can also select either skill from the skill picker. Automatic star
 2. **Keep related logic together.** Inline short, meaningless wrappers with one or two callers. Retain abstractions that express domain rules, meaningful reuse, external boundaries, or lifecycle ownership.
 3. **Extend before replacing.** Find and extend the existing implementation and its extension points instead of building parallel versions of the same feature.
 4. **Think in systems.** Consider responsibility, dependencies, state, failures, compatibility, and the practical cost of the next change.
-5. **Minimize interruption.** Inspect repository facts and make ordinary engineering decisions independently. Ask about consequential ambiguity, not routine details.
+5. **Minimize interruption, align on consequential architecture.** Inspect repository facts and make ordinary engineering decisions independently. Proceed directly on small edits; for major features or architectural trade-offs, discuss and align on the plan before implementing.
 6. **Name things by their role.** Use concise, conventional domain names. Avoid meaningless numeric suffixes, generator signatures, and temporary labels; preserve meaningful names such as `sha256`, `http2`, and real protocol versions.
 
 The policy lives in [the PlanET skill](skills/planet/SKILL.md). Host adapters load that same policy instead of maintaining separate versions. Naming guidance does not claim to modify hidden model internals or remove upstream attribution.

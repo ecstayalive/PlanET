@@ -40,10 +40,15 @@ erase upstream attribution or pretend semantic naming changes hidden model behav
 
 ## Decide or ask
 
-Choose the existing project's formatter, module layout, and dependency conventions
-without asking. Inspect existing timezone behavior before asking about a date
-feature. If a new billing cutoff timezone remains unspecified and materially
-changes charges, ask that specific business question with a recommended choice.
+For a localized bugfix, trivial wrapper inlining, or adding an export format to an
+established pipeline, proceed directly without asking. Choose the existing project's
+formatter, module layout, and dependency conventions by inspection.
+
+For a substantial new subsystem, a schema migration, or choosing between divergent
+architectures (e.g. streaming vs batch processing), formulate a clear design proposal
+with trade-offs, discuss it with the user, and obtain agreement before writing code.
+If a business rule remains unspecified and materially changes outcomes (e.g. billing
+cutoff timezones), ask that specific question with a recommended choice.
 
 ## Display or wait
 
