@@ -19,8 +19,8 @@ export function validateScreen(screen) {
     throw new Error('Screen summary must be text.');
   }
   for (const [name, required, optional] of [
-    ['panels', ['title'], ['text', 'code', 'html']],
-    ['choices', ['id', 'label'], ['description', 'html']],
+    ['panels', ['title'], ['text', 'code', 'html', 'file', 'symbol', 'language', 'originalCode']],
+    ['choices', ['id', 'label'], ['description', 'html', 'code', 'file', 'symbol', 'originalCode']],
   ]) {
     if (screen[name] !== undefined && !Array.isArray(screen[name])) {
       throw new Error(`${name} must be an array.`);

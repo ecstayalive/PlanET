@@ -1,5 +1,13 @@
 // Shared graph contract: deterministic layout preserves readable branches and labels.
-export function layoutDiagram(diagram) {
+export function calcEdgePath(from, to, down = false) {
+  const start = down ? [from.x + 106, from.y + 100] : [from.x + 212, from.y + 50];
+  const end = down ? [to.x + 106, to.y - 4] : [to.x - 4, to.y + 50];
+  const mid = down ? (start[1] + end[1]) / 2 : (start[0] + end[0]) / 2;
+  return down ? `M${start} C${start[0]},${mid} ${end[0]},${mid} ${end}`
+    : `M${start} C${mid},${start[1]} ${mid},${end[1]} ${end}`;
+}
+
+export function layoutDiagram(diagram, preserveCoordinates = false) {
   if (!diagram || typeof diagram !== 'object' || !Array.isArray(diagram.nodes) ||
       !Array.isArray(diagram.edges) || diagram.nodes.length < 1 || diagram.nodes.length > 24 ||
       diagram.edges.length > 48 || !['right', 'down'].includes(diagram.direction ?? 'right')) {
@@ -44,11 +52,19 @@ export function layoutDiagram(diagram) {
   const height = down ? columns.length * 158 + 48 : rows * 136 + 48;
   for (const column of columns) {
     for (const [row, node] of column.entries()) {
-      node.x = down ? 24 + (rows - column.length) * 125 + row * 250 : 24 + node.column * 280;
-      node.y = down ? 24 + node.column * 158 : 24 + (rows - column.length) * 68 + row * 136;
+      const origNode = diagram.nodes.find(n => n.id === node.id);
+      if (preserveCoordinates && origNode && typeof origNode.x === 'number' && typeof origNode.y === 'number') {
+        node.x = origNode.x;
+        node.y = origNode.y;
+      } else {
+        node.x = down ? 24 + (rows - column.length) * 125 + row * 250 : 24 + node.column * 280;
+        node.y = down ? 24 + node.column * 158 : 24 + (rows - column.length) * 68 + row * 136;
+      }
     }
   }
-  return { nodes, edges: diagram.edges, width, height, down };
+  const calcWidth = Math.max(width, ...[...nodes.values()].map(n => (n.x ?? 0) + 260));
+  const calcHeight = Math.max(height, ...[...nodes.values()].map(n => (n.y ?? 0) + 140));
+  return { nodes, edges: diagram.edges, width: calcWidth, height: calcHeight, down };
 }
 
 function escapeXml(text) {
@@ -67,9 +83,8 @@ export function renderDiagram(diagram, namespace = 'flow') {
     const start = down ? [from.x + 106, from.y + 100] : [from.x + 212, from.y + 50];
     const end = down ? [to.x + 106, to.y - 4] : [to.x - 4, to.y + 50];
     const mid = down ? (start[1] + end[1]) / 2 : (start[0] + end[0]) / 2;
-    const path = down ? `M${start} C${start[0]},${mid} ${end[0]},${mid} ${end}`
-      : `M${start} C${mid},${start[1]} ${mid},${end[1]} ${end}`;
-    fragments.push(`<path d="${path}" fill="none" stroke="#8aa294" stroke-width="1.7" marker-end="url(#${marker})"/>`);
+    const path = calcEdgePath(from, to, down);
+    fragments.push(`<path d="${path}" data-from="${edge.from}" data-to="${edge.to}" fill="none" stroke="#8aa294" stroke-width="1.7" marker-end="url(#${marker})"/>`);
     if (edge.label) {
       const x = (start[0] + end[0]) / 2;
       const y = (start[1] + end[1]) / 2 - 10;
@@ -81,7 +96,7 @@ export function renderDiagram(diagram, namespace = 'flow') {
     const kind = node.kind ?? 'process';
     const color = kind === 'decision' ? '#a47235' : kind === 'result' ? '#2c6b52' : '#527b6c';
     const fill = kind === 'decision' ? '#fff8ed' : kind === 'result' ? '#eaf5ed' : '#ffffff';
-    fragments.push(`<g transform="translate(${node.x},${node.y})"><rect x="0" y="3" width="212" height="100" rx="12" fill="#203c2d" opacity=".035"/><rect width="212" height="100" rx="12" fill="${fill}" stroke="#d4e0d6"/><rect x="15" y="16" width="5" height="5" rx="2" fill="${color}"/><text x="27" y="21" font-family="system-ui,sans-serif" font-size="9" letter-spacing="1.3" fill="${color}">${kind.toUpperCase()}</text>`);
+    fragments.push(`<g transform="translate(${node.x},${node.y})" data-node-id="${node.id}" class="diagram-node"><rect x="0" y="3" width="212" height="100" rx="12" fill="#203c2d" opacity=".035"/><rect width="212" height="100" rx="12" fill="${fill}" stroke="#d4e0d6"/><rect x="15" y="16" width="5" height="5" rx="2" fill="${color}"/><text x="27" y="21" font-family="system-ui,sans-serif" font-size="9" letter-spacing="1.3" fill="${color}">${kind.toUpperCase()}</text>`);
     for (const [text, offset, size, weight, limit] of [
       [node.label, 44, 14, 600, 24], [node.detail ?? '', 76, 10, 400, 34],
     ]) {

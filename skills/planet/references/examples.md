@@ -38,17 +38,29 @@ Prefer `parseConfig`, `Order`, `orders`, and `retryDelay` to `processHelper2`,
 like `sha256`, `http2`, and a real `v2` protocol compatibility boundary. Do not
 erase upstream attribution or pretend semantic naming changes hidden model behavior.
 
+## Design first and secure write authorization
+
+Regardless of task scale, analyze existing modules and establish responsibilities and
+interfaces before modifying code:
+
+- For a bug fix or localized extension: State which module owns the behavior, confirm
+  that its public contract remains unchanged, identify the exact interface change,
+  and obtain user confirmation before modifying code.
+- For a new feature or architectural change: Outline affected modules, their distinct
+  responsibilities, and interface contracts. Present a visual companion board
+  (using visual mode where helpful) so the user can compare layout options and
+  inspect the architecture at a glance. Refinements are discussed in conversation,
+  and explicit write authorization is secured before modifying code.
+
 ## Decide or ask
 
-For a localized bugfix, trivial wrapper inlining, or adding an export format to an
-established pipeline, proceed directly without asking. Choose the existing project's
-formatter, module layout, and dependency conventions by inspection.
+Choose the existing project's formatter, module layout, and dependency conventions
+by inspection without asking.
 
-For a substantial new subsystem, a schema migration, or choosing between divergent
-architectures (e.g. streaming vs batch processing), formulate a clear design proposal
-with trade-offs, discuss it with the user, and obtain agreement before writing code.
-If a business rule remains unspecified and materially changes outcomes (e.g. billing
-cutoff timezones), ask that specific question with a recommended choice.
+For major architectural choices (e.g. streaming vs batch processing) or unspecified
+business rules that materially change outcomes (e.g. billing cutoff timezones),
+formulate a clear design proposal with trade-offs, discuss it with the user, and
+obtain agreement as part of the design phase.
 
 ## Display or wait
 

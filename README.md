@@ -54,24 +54,35 @@ Use your agent normally after installation. With startup loading enabled, PlanET
 | Codex | `$planet:planet` | `$planet:planet-visual` |
 | Pi | `/skill:planet` | `/skill:planet-visual` |
 
-The agent inspects the existing implementation and distinguishes task scale: for localized edits and quick verification, it implements the change directly; for substantial features or structural overhauls, it aligns on a proposed design with you before writing code. It asks about consequential ambiguity and uses the visual workspace when seeing a design or comparing choices helps.
+The agent inspects existing modules, establishes clear responsibilities and interfaces, and obtains your write authorization before modifying code. When helpful, it delivers a visual companion board for layout or architecture comparison.
 
-For example: **“Add Markdown export using the existing export pipeline.”** PlanET guides the agent to find the current implementation, preserve its contracts, and extend it with a focused change. To inspect the design, add **“Show how the new exporter fits into the existing flow.”**
+For example: **“Add Markdown export using the existing export pipeline.”** PlanET guides the agent to find the current implementation, define the exporter's module contract, and present the design before modifying code. To inspect the design, add **“Show how the new exporter fits into the existing flow.”**
 
 In Codex, you can also select either skill from the skill picker. Automatic startup loading depends on host hook support and trust settings; explicit skills remain available when hooks are disabled. PlanET has no cloud backend, telemetry, or runtime dependencies. Model inference is handled by your coding agent.
 
 ## Principles
 
-1. **Choose suitable, elegant design patterns.** Use established patterns when they solve a real problem, with the simplest structure that does the job.
+1. **Choose the simplest suitable design pattern.** Use established patterns when they solve a real problem, with the simplest structure that does the job.
 2. **Keep related logic together.** Inline short, meaningless wrappers with one or two callers. Retain abstractions that express domain rules, meaningful reuse, external boundaries, or lifecycle ownership.
 3. **Extend before replacing.** Find and extend the existing implementation and its extension points instead of building parallel versions of the same feature.
 4. **Think in systems.** Consider responsibility, dependencies, state, failures, compatibility, and the practical cost of the next change.
-5. **Minimize interruption, align on consequential architecture.** Inspect repository facts and make ordinary engineering decisions independently. Proceed directly on small edits; for major features or architectural trade-offs, discuss and align on the plan before implementing.
-6. **Name things by their role.** Use concise, conventional domain names. Avoid meaningless numeric suffixes, generator signatures, and temporary labels; preserve meaningful names such as `sha256`, `http2`, and real protocol versions.
+5. **Design first and secure write authorization.** Regardless of task scope, design before modifying code. Analyze existing modules under the criteria of simplest modularity and distinct responsibilities. Define module responsibilities and explicit interfaces. Discuss key design trade-offs, use visual companion boards when visual clarity or A/B comparison helps, and proceed to code execution only after receiving explicit write authorization.
+6. **Minimize trivial interruptions.** Resolve repository facts by inspection and make ordinary engineering choices independently. Do not interrupt for trivial implementation details; reserve interaction for design alignment, consequential choices, and write authorization.
+7. **Name things by their role.** Use concise, conventional domain names. Avoid meaningless numeric suffixes, generator signatures, and temporary labels; preserve meaningful names such as `sha256`, `http2`, and real protocol versions.
 
 The policy lives in [the PlanET skill](skills/planet/SKILL.md). Host adapters load that same policy instead of maintaining separate versions. Naming guidance does not claim to modify hidden model internals or remove upstream attribution.
 
 The principles are language-agnostic. Your agent uses the repository's existing compiler, test runner, formatter, and conventions; PlanET provides engineering guidance rather than a language-specific toolchain.
+
+The working sequence is **Inspect → Design → Authorize → Implement → Simplify → Verify**. Small changes need a concise design and explicit write authorization, not mandatory plan files or interviews. Review-only requests stay review-only.
+
+## Skill structure and context cost
+
+- **`planet`** holds the shared engineering policy loaded by startup adapters when enabled. Its skill body uses compact paragraphs and list items, removing unnecessary blank lines and hard line wrapping without changing the wording or principles.
+- **`planet-visual`** is loaded when diagrams, layout previews, or visual comparisons help. Its full instructions are not included in the startup policy.
+- **Reference documents** are linked with explicit reading conditions, so detailed design guidance and screen schemas are consulted only when relevant.
+
+Whitespace cleanup reduces formatting overhead, not the amount of guidance. Fewer lines do not imply proportionally fewer tokens; actual token counts depend on the model's tokenizer.
 
 ## Pi prompt-prefix stability
 
@@ -83,19 +94,19 @@ This avoids cache invalidation caused by PlanET itself. Actual cache hits still 
 
 ## Visual workspace
 
-Show architecture, compare designs, and preview results in a focused browser UI. Flowcharts use clear hierarchy, descriptive nodes, readable connectors, and a consistent visual system. Screens distinguish **views** from **decisions**:
+The visual workspace is a lightweight companion board, not a browser-based IDE or diagram editor. Use it for architecture overviews, static UI previews, and A/B comparisons; keep detailed discussion, code review, and editing in the conversation, terminal, or native IDE. Flowcharts use deterministic layout with readable nodes and connectors. Screens distinguish **views** from **decisions**:
 
 - A **view** explains a design or shows a result while authorized work continues. The example below maps the existing export path and its Markdown extension, with the proposed implementation and design rationale alongside it.
 
 ![PlanET view mode showing the existing export flow, its Markdown extension, and a focused implementation](assets/visual-view.svg)
 
-- A **decision** requests a consequential choice and records it only after explicit confirmation. The example below compares two navigation layouts. Neither option is preselected; choose a direction or write a response, then confirm it.
+- A **decision** requests a consequential choice or delivers a visual comparison board. Review the alternatives visually, confirm your direction, and grant write authorization. The example below compares two navigation layouts. Neither option is preselected; choose a direction or write a response, then confirm it.
 
 ![PlanET decision mode comparing sidebar and top navigation with a response field and explicit confirmation](assets/visual-decision.svg)
 
 Ask the agent to show a design or comparison, then open the local link it shares. The agent prepares and updates the visual workspace. A view needs no reply. For a decision, review the alternatives, confirm your choice, and return to the conversation to continue.
 
-The workspace runs locally and supports architecture diagrams, code previews, UI comparisons, and written feedback. Confirmed decisions survive a page refresh. If a local browser is unavailable, the agent can explain the design in the conversation or share a static preview.
+The workspace runs locally and supports architecture diagrams, read-only code previews with file and symbol context, static UI comparisons, and written feedback. Request adjustments in the conversation; the agent updates the board. Confirmed decisions survive a page refresh, but browser events do not automatically start an agent turn. Authorization is limited to the discussed change, not permission to commit, push, deploy, or expand scope. If a local browser is unavailable, the agent can explain the design in the conversation or share a static preview.
 
 ## Identity and terminal display
 

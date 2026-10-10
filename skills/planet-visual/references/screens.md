@@ -22,9 +22,18 @@ Write one JSON object to `screen.json`:
 `id` and choice IDs use descriptive ASCII slugs: letters, digits, and hyphens,
 starting with a letter. `mode` is `view` or `decision`; `title` is required.
 `summary`, `panels`, and `choices` are optional. Panels have a required `title`
-and any of `text`, `code`, `html`, or `diagram`. Choices have required `id` and `label`, plus
-optional `description` and `html`. A view cannot include choices. A decision
-without choices accepts a free-text reply. Choice IDs must be unique.
+and any of `text`, `code`, `html`, `diagram`, `file`, `symbol`, `language`, or `originalCode`.
+Choices have required `id` and `label`, plus optional `description`, `html`, `code`,
+`file`, `symbol`, or `originalCode`. A view cannot include choices. A decision without choices
+accepts a free-text reply. Choice IDs must be unique.
+
+Always provide repository context for code: populate `file` (target file path),
+`symbol` (affected function, interface, or class), `language`, and optionally
+`originalCode` (previous implementation for diffing). Do not present isolated
+code fragments without grounding. The visual companion displays contextual code blocks
+alongside architectural flowcharts so the user can inspect the proposed contract
+before authorization. Detailed code review and edits belong in the developer's native
+IDE or terminal.
 
 Use `html` for static mockups or inline SVG diagrams, with inline styles if needed.
 Frames are sandboxed: scripts, remote images, external fonts, forms, and navigation
@@ -59,6 +68,11 @@ and kind `source`, `process`, `decision`, or `result`. Edges connect existing ID
 and may include a short label. Up to 24 nodes and 48 edges are supported. The graph
 must be acyclic; focused subflows are more legible than dense diagrams.
 
+Native flowcharts use clear, deterministic layout with clean node styling and
+readable connecting curves. They provide an immediate visual overview of data flows
+and module interactions so the user can evaluate architecture and choice trade-offs
+at a glance without context switching.
+
 An authenticated `GET /screen` adds a content-derived `revision`. Browser responses
 must include that revision, so an old browser tab cannot confirm a changed design.
 One explicit answer is accepted per revision; publishing a revised question permits
@@ -67,4 +81,7 @@ a new answer. For view mode, omit `choices` and use the same panel format.
 The server publishes updates via `GET /updates` (SSE), accepts responses through
 `POST /confirm`, and exposes recorded replies through `GET /events`. These API
 routes require `Authorization: Bearer <token>`. The browser obtains its token from
-the URL fragment; it never sends the fragment as a query string or referrer.
+the URL fragment; it never sends the fragment as a query string or referrer. In
+decision mode, `POST /confirm` can optionally include a `blueprint` array containing
+user modifications to module responsibilities and interfaces made directly in the
+viewer, persisting the authorized design to `events.jsonl`.

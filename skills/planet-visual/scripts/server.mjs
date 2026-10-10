@@ -1,6 +1,6 @@
 import { randomBytes, timingSafeEqual } from 'node:crypto';
 import { watch } from 'node:fs';
-import { appendFile, mkdir, readFile } from 'node:fs/promises';
+import { appendFile, mkdir, readFile, stat } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { resolve } from 'node:path';
 import { validateScreen } from './screen.mjs';
@@ -129,9 +129,10 @@ export async function startViewer({ directory, port = 0, idleTimeout = 3_600_000
     }
     const choice = answer.choice;
     const feedback = answer.feedback ?? '';
+    const blueprint = answer.blueprint;
     if (typeof feedback !== 'string' || feedback.length > 4000 ||
         (choice !== undefined && !screen.choices?.some(item => item.id === choice)) ||
-        (choice === undefined && !feedback.trim())) {
+        (choice === undefined && !feedback.trim() && !blueprint)) {
       response.writeHead(400).end(JSON.stringify({ error: 'Choose a valid option or enter a response.' }));
       return;
     }
@@ -146,20 +147,44 @@ export async function startViewer({ directory, port = 0, idleTimeout = 3_600_000
       response.writeHead(409).end(JSON.stringify({ error: 'This decision has already been confirmed.' }));
       return;
     }
-    const event = { screen: screen.id, revision: screen.revision, choice, feedback: feedback.trim(), confirmedAt: new Date().toISOString() };
+    const event = {
+      screen: screen.id,
+      revision: screen.revision,
+      choice,
+      feedback: feedback.trim(),
+      ...(blueprint !== undefined ? { blueprint } : {}),
+      confirmedAt: new Date().toISOString()
+    };
     await appendFile(resolve(directory, 'events.jsonl'), `${JSON.stringify(event)}\n`, { mode: 0o600 });
     answers.add(screen.revision);
     response.writeHead(200, { 'Content-Type': 'application/json' }).end(JSON.stringify(event));
   }
 
-  const watcher = watch(directory, () => {
-    for (const client of clients) client.write('data: update\n\n');
-  });
-  watcher.on('error', close);
+  let watcher;
+  let pollInterval;
+  try {
+    watcher = watch(directory, () => {
+      for (const client of clients) client.write('data: update\n\n');
+    });
+    watcher.on('error', close);
+  } catch (error) {
+    if (error.code !== 'ENOSPC') throw error;
+    let lastMtime = 0;
+    pollInterval = setInterval(async () => {
+      try {
+        const stats = await stat(resolve(directory, 'screen.json'));
+        if (stats.mtimeMs !== lastMtime) {
+          lastMtime = stats.mtimeMs;
+          for (const client of clients) client.write('data: update\n\n');
+        }
+      } catch {}
+    }, 1000).unref();
+  }
 
   function close() {
     clearTimeout(timer);
-    watcher.close();
+    if (pollInterval) clearInterval(pollInterval);
+    watcher?.close();
     for (const client of clients) client.end();
     server.close();
     server.closeAllConnections();
