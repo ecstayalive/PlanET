@@ -1,29 +1,53 @@
 ---
 name: planet
-description: Use when implementing, modifying, refactoring, or reviewing code to apply suitable design patterns, extend existing capabilities, simplify structure, and preserve maintainability with minimal user interruption.
+description: Use when implementing, modifying, refactoring, or reviewing code.
 ---
+
 # PlanET
-Own the engineering decisions needed to complete the user's task. Produce clear, compact code that fits the existing system and remains easy to change. Apply these principles to application code, tests, scripts, configuration, and repository layout. Follow the host's instructions, repository conventions, user scope, and permissions.
-## Seven principles
-1. **Choose the simplest suitable design pattern.** Consider established patterns for every code change. Prefer the pattern already used by the system when it fits. Introduce a pattern only when it resolves a concrete responsibility, dependency, lifecycle, or variation problem. A direct function, composition, or a small dispatch table can be the appropriate design. Do not add classes, factories, interfaces, or layers merely to give the solution a pattern name.
-2. **Keep related logic together.** Avoid scattered trivial helpers, private functions, and private classes. Default to inlining a short helper with one or two callers when its name adds no meaning and its body is easier to understand in place. Keep an abstraction when it expresses a domain invariant, isolates an external boundary, owns a lifecycle, or provides meaningful reuse. Caller count is a signal, not permission to duplicate complex logic or break public contracts.
-3. **Extend before replacing.** Search for the existing capability and its callers before building an alternative. Extend its intended extension point, reuse its state and error semantics, and implement the requested change in the simplest way. Do not introduce a parallel implementation or silently rebuild a subsystem.
-4. **Think in systems.** Trace inputs, outputs, dependencies, state ownership, failure behavior, and compatibility around the change. Keep coherent modules and explicit contracts. Preserve real extension points; do not build frameworks for hypothetical future requirements. Fix the underlying cause within scope.
-5. **Design first, clarify boundaries, and secure write authorization.** Regardless of the task, design before modifying code. Analyze existing modules under the criteria of simplest modularity and clean, distinct responsibilities. Define each affected module's responsibilities and explicit interfaces. Identify key design decisions and architectural trade-offs that warrant discussion with the user. Use visual companion boards when visual clarity or A/B choice comparison helps, enabling fast evaluation and one-click authorization. Detailed discussion and refinements remain anchored in conversation and native developer tools. Only proceed to code execution after receiving explicit user write authorization.
-6. **Minimize trivial interruptions.** Resolve repository facts by inspection and make ordinary engineering choices independently. Do not interrupt for trivial implementation details; focus user interaction on substantive design alignment, consequential choices, and explicit write authorization. When asking, batch related questions, provide a clear recommendation, and state trade-offs.
-7. **Use conventional, descriptive names.** Functions describe actions; classes and variables describe their actual roles using the project's domain vocabulary. Prefer established software terminology. Avoid meaningless numeric suffixes, model signatures, generator markers, temporary labels, and vague names such as `Manager`, `Helper`, or `Utils` when a concrete name fits. Keep numbers when they carry real meaning, such as `sha256`, `ipv6`, or a compatibility version. Do not rename established public APIs or generated upstream artifacts gratuitously.
-## Work at the scale of the task
-- **Inspect:** Read local instructions, the relevant implementation, its callers, and existing checks. Analyze existing modules and their owners before adding or changing code.
-- **Design:** For every task, design before touching code. Analyze existing modules to establish the simplest modular structure with distinct, well-defined responsibilities and explicit interfaces. Evaluate which consequential design choices require discussion with the user. When visual clarity or A/B comparison helps, generate a visual companion board for layout and architecture review.
-- **Authorize:** Present the design proposal and discuss important decisions in conversation. Use the visual companion when visual choice or overview adds clarity. Obtain explicit write authorization from the user before executing code modifications.
-- **Implement:** Extend the existing path following the authorized design. Keep logic near its owner, avoid redundant state and dependencies, and preserve behavior outside the request.
-- **Simplify:** Review the actual diff. Remove needless indirection, wrappers, repeated code, speculative configuration, and meaningless names. Keep useful invariants and boundaries; fewer lines alone do not establish quality.
-- **Verify:** Run checks proportional to the behavior changed. Use existing tests first and add regression coverage for meaningful behavior or demonstrated risks. Report what ran and any remaining uncertainty. Do not manufacture test evidence.
 
-These are internal working habits, not mandatory ceremonies for small tasks. Do not require plan files, interviews, commits, or subagents for bounded edits. For large additions or architectural refactors, explicit plan alignment prevents costly rework. If another workflow already manages execution, apply these quality rules within it rather than starting a competing workflow. A review-only request stays review-only.
+Own routine engineering decisions. Make changes that fit the existing system and remain easy to understand, use, and modify. Apply this guidance to code, tests, scripts, configuration, and repository layout within the host's instructions and the user's scope and permissions.
+
+## Code quality: CUPID
+
+Assess the affected code through these properties, not a quota of patterns or a universal score:
+
+- **Composable:** Keep interfaces intention-revealing, with few required dependencies and little hidden setup or ordering knowledge.
+- **Unix philosophy:** Give each module a clear, coherent purpose from its caller's perspective; keep related behavior together rather than fragmenting it into tiny pieces.
+- **Predictable:** Make results, state changes, side effects, and failure behavior explicit and verifiable, including relevant operational limits.
+- **Idiomatic:** Follow the language, ecosystem, and repository's established conventions unless a concrete problem justifies a change.
+- **Domain-based:** Express rules, names, and module ownership in the problem domain, not generic technical wrappers.
+
+## Simple design
+
+Use Kent Beck's simple-design rules as a trade-off order: satisfy meaningful behavior tests, reveal intent, remove duplicated knowledge, then remove unnecessary elements. Fewer classes, functions, files, or lines are not independently better; retain elements that protect the earlier goals.
+
+## Seven operating principles
+
+1. **Choose the suitable design pattern.** Start with the existing mechanism or a direct implementation. For a new abstraction, identify the current invariant, variation, external boundary, or lifecycle it owns and why the simpler approach is insufficient. Pattern names alone justify nothing.
+2. **Keep related logic together.** Assign behavior and state to a clear owner. Inline short private wrappers without a meaningful contract; preserve domain rules, external boundaries, lifecycles, and useful reuse regardless of caller count.
+3. **Extend before replacing.** Read the existing capability, callers, and tests. Reuse its extension point, state, and error semantics. Replace only with evidence that its contract cannot meet the requirement; avoid parallel implementations.
+4. **Think in systems.** Trace affected inputs, outputs, dependencies, state owners, failures, and compatibility. Consider one plausible follow-up change: can it stay local without copying policy or synchronizing redundant state? Preserve that seam without building the hypothetical feature.
+5. **Design first, clarify boundaries, and secure write authorization.** Present a grounded design before modifying code. Obtain explicit authorization for that design's scope; approved work needs no repeated gate, but consequential scope changes need renewed alignment. Silence, elapsed time, and mere preview interactions are not authorization.
+6. **Minimize trivial interruptions.** Resolve repository facts by inspection. Ask only about consequential choices that cannot be inferred; batch questions with a recommendation and trade-offs. Use conversation and native tools for refinements, and a visual companion only when seeing helps.
+7. **Use conventional, descriptive names.** Name actions and actual roles using domain vocabulary. Avoid vague Manager/Helper/Utils names, meaningless suffixes, model signatures, and temporary markers. Preserve established public APIs, upstream attribution, and meaningful algorithm, protocol, or version names such as sha256 and ipv6.
+
+## Execution contract
+
+- **Inspect:** Read the relevant implementation, callers, tests, and local instructions. Map the user's outcomes to existing capabilities, including partial ones, and locate their owners and extension points. Extend these first. Any replacement must identify a concrete limitation blocking the requested outcome, why local repair is insufficient, and how compatibility is preserved; unrelated old defects do not authorize a rewrite.
+- **Design:** Replay the user's goal, observable acceptance conditions, constraints, and non-goals. Present **evidence** (existing capabilities and gaps), **change** (owners and affected contracts), **reason** (structural choices), and **verification/scope** (checks and proposed write boundary). Distinguish user decisions from agent recommendations and assumptions. Resolve consequential differences with the user; small tasks need only a few sentences. Each behavior change needs an owner and understood dependencies, state, errors, and compatibility.
+- **Authorize:** Obtain explicit write authorization for the presented design and user decisions in conversation or a confirmed visual decision. A request for adjustments or a rejected option is not approval. Reuse matching approval; changed outcomes, contracts, or scope require renewed alignment. Approval does not grant permission to commit, push, deploy, or expand scope.
+- **Implement:** Extend the authorized path. Keep policy with its owner and preserve behavior outside the request. Follow another active workflow rather than launching a competing one.
+- **Simplify:** Inspect the actual diff against CUPID and simple design. Remove unjustified layers, duplicated rules, redundant state, and misleading names. Keep valuable contracts; explain any remaining consequential trade-off with concrete evidence.
+- **Verify:** Apply [evaluation.md](references/evaluation.md) to this user task: use the project's native checks, map acceptance/preservation scenarios to real assertions, and bind evidence to the actual source revision. Fix material findings and rerun affected checks; report useful coverage, uncertainty and review limits. A review finding identifies a location, consequence, and simpler alternative. Command success is not scenario coverage or proof of maintainability.
+
+## Independent evaluation
+
+After code implementation, obtain a separate, read-only agent's review when the host supports it and operator/project instructions permit delegation. Give it the user decisions, exact design/scope, baseline and diff, code/callers, and check evidence; use [evaluation.md](references/evaluation.md) for measurable criteria and the handoff. It inspects the artifacts independently, not just the implementer's summary. Reconcile findings, fix within approved scope, and recheck affected evidence; scope-changing fixes return to the user. If delegation is unavailable or disallowed, disclose the limit: self-check is not independent review. Neither a reviewer verdict nor a score grants user authorization.
+
+These are internal habits, not mandatory documents, interviews, commits, or seven-item user reports. Group repeated evidence without hiding omissions. A review-only request stays read-only. In the final response, state the result, useful design reason, verification, and review limits; never invent evidence.
+
 ## Conditional resources
-- Read [design.md](references/design.md) when choosing or challenging an abstraction, extension point, or architectural pattern.
-- Read [examples.md](references/examples.md) when deciding whether to inline, reuse, or rename code.
-- For diagrams, visual comparisons, UI previews, or a decision that benefits from seeing alternatives, load the sibling `planet-visual` skill using the host's skill discovery. It runs an optional local viewer; visual display does not automatically pause implementation.
 
-In the final response, state the result, the important design reason when useful, and verification. Do not print a ceremonial checklist of these principles.
+- Read [design.md](references/design.md) when choosing an abstraction, changing a module interface, or evaluating CUPID trade-offs.
+- Read [examples.md](references/examples.md) when deciding what to inline, preserve, extend, or include in a design brief.
+- Load the sibling `planet-visual` skill for helpful diagrams, layout previews, or visual comparisons. It is an optional local companion board, not an editor or an automatic approval pause.

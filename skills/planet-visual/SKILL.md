@@ -1,13 +1,16 @@
 ---
 name: planet-visual
-description: Use when a coding task benefits from a browser-based diagram, design comparison, UI preview, or an important visual decision. Show progress without pausing unless a consequential user choice is required.
+description: Use when visual examples, diagrams, layout previews, or comparisons help the user understand an implementation or make a design decision.
 ---
 # PlanET Visual
-Make designs and results easy to inspect. Use the user's language for screens. Do not start a visual interview or make every preview an approval gate.
+Help the user understand the proposed implementation and its trade-offs. Use the user's language. PlanET supplies optional presentation styles and local display/confirmation infrastructure, not a required diagram language, content layout, or design process.
+## Choose the expression
+Select the simplest useful medium: authored HTML for a walkthrough or layout, concrete examples for behavior, and architecture/data-flow diagrams for responsibility and interaction. Combine them only when useful. Native diagrams are an optional convenience; use inline SVG or HTML when they communicate the structure better. Preserve user goals and decisions rather than forcing the problem into a preset card or node structure.
+For HTML, optionally copy [style-template.html](assets/style-template.html) and author your own markup. It supplies colors, typography, spacing, and reusable styles only. Read [design.md](references/design.md) for expression examples; no fixed sequence of panels is required.
 ## Display or decision
 - Use `mode: "view"` for diagrams, architectural overviews, and before/after comparisons. Share the URL and continue authorized work.
-- Use `mode: "decision"` as a visual companion board for consequential choices, A/B design comparisons, and explicit write authorization. The visual board presents clear layout and architectural choices so the user can compare options visually and select a direction with one click.
-- Browser selections count only after the user presses **Authorize & Confirm choice** or **Send response**. Detailed code refinement and design adjustments remain anchored in the conversation and the developer's native IDE, avoiding bloated in-browser editors. A screen event records the authorized direction in `events.jsonl`. Chat corrections remain authoritative.
+- Use `mode: "decision"` when a consequential user choice or explicit write authorization is needed. Explain alternatives, consequences, and the proposed scope in the medium best suited to the question.
+- Browser responses count only after explicit submission. Match the screen and revision, then interpret the actual choice/feedback: only explicit approval of the described design authorizes writes. Corrections, rejection, or ordinary feedback do not. Detailed refinements remain in conversation and native developer tools; a visual does not replace user alignment.
 ## Start the local viewer
 Resolve the path below from this skill's installed directory. Node.js 22+ is required; no dependency installation, MCP server, or remote backend is needed.
 ```sh
@@ -17,8 +20,6 @@ Choose a session directory outside source control, such as a task-specific tempo
 
 Use the host's persistent/background execution facility. In Codex, keep the exec session alive in foreground; in Claude Code, use its background Bash facility; in Pi, use an available persistent process facility or let the user run the command in another terminal. Do not assume detached processes survive the host. If local browser access is unavailable, provide a static artifact or explain in chat and continue; do not expose a network listener just to bypass the limitation.
 ## Publish and read
-Read [design.md](references/design.md) when preparing diagrams or comparisons. Use native flowcharts for coherent node, connector, and branch styling.
-
 Write `screen.json` in the returned directory using the schema in [screens.md](references/screens.md). Write to a temporary file and rename it to `screen.json` when possible so readers see a complete update. Give changed questions meaningful new IDs. The server also hashes content to reject stale answers when a screen is edited without changing its ID.
 
 The viewer updates through server-sent events over HTTP. It supports native flowcharts, text, code, static HTML/SVG previews in isolated frames, and explicit choice/free-text replies. It does not execute code from screens in the agent's shell. This transport avoids a custom WebSocket implementation or an additional runtime dependency.

@@ -1,0 +1,59 @@
+<!-- Optional presentation styles. Copy into a panel's html, then author the content
+     and layout that best explain the task. No required sections or decision controls. -->
+<style>
+  :root {
+    color-scheme: light;
+    --planet-surface: #f7f8f3;
+    --planet-paper: #ffffff;
+    --planet-ink: #203339;
+    --planet-muted: #52675c;
+    --planet-border: #dce3dc;
+    --planet-accent: #285d4c;
+    --planet-decision: #85551b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 20px;
+    background: var(--planet-surface);
+    color: var(--planet-ink);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    line-height: 1.6;
+  }
+  h1, h2, h3 { line-height: 1.3; }
+  h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.2rem; }
+  p { max-width: 75ch; }
+  .planet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: 16px;
+  }
+  .planet-card {
+    padding: 20px;
+    background: var(--planet-paper);
+    border: 1px solid var(--planet-border);
+    border-radius: 12px;
+    min-width: 0;
+  }
+  .planet-muted { color: var(--planet-muted); }
+  .planet-note {
+    border-left: 4px solid var(--planet-decision);
+    padding: 10px 16px;
+    background: #fff8ed;
+    color: var(--planet-decision);
+  }
+  pre {
+    padding: 16px;
+    border: 1px solid var(--planet-border);
+    border-radius: 8px;
+    background: var(--planet-paper);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 10px; border-bottom: 1px solid var(--planet-border); }
+  th { color: var(--planet-accent); }
+  svg { display: block; max-width: 100%; height: auto; }
+</style>

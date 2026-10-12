@@ -16,7 +16,7 @@ function renderScreen(screen, events) {
   if (current?.revision === screen.revision) {
     if (answered) {
       for (const element of form.elements) element.disabled = true;
-      message.textContent = '已确认并授权。请回到终端继续执行。';
+      message.textContent = '已记录你的回复。请回到终端继续对齐。';
     }
     return;
   }
@@ -32,7 +32,7 @@ function renderScreen(screen, events) {
   choices.replaceChildren();
 
   const legend = document.createElement('legend');
-  legend.textContent = '选择方案并授权 (Choose a direction)';
+  legend.textContent = '选择方向并确认回复 (Choose a direction)';
   choices.append(legend);
 
   for (const [items, container, isChoice] of [
@@ -114,13 +114,15 @@ function renderScreen(screen, events) {
   form.reset();
   form.hidden = screen.mode !== 'decision';
   choices.hidden = !(screen.choices?.length);
-  document.querySelector('#confirm').textContent = screen.choices?.length ? '授权并确认选择 (Authorize choice)' : '发送确认反馈 (Send response)';
+  document.querySelector('#confirm').textContent = screen.choices?.length ? '确认选择 (Confirm choice)' : '发送回复 (Send response)';
   for (const element of form.elements) element.disabled = answered;
-  message.textContent = answered
-    ? '已确认并授权。请回到终端继续执行。'
-    : screen.mode === 'view'
-      ? '设计视图：用于直观了解架构走向。如需调整请在终端向 AI 说明。'
-      : '请在上方选定目标方案并授权，或在下方留下备注说明。详细代码调整可在终端中直接对齐。';
+  if (answered) {
+    message.textContent = '已记录你的回复。请回到终端继续对齐。';
+  } else if (screen.mode === 'view') {
+    message.textContent = '设计视图：用于理解实现和方案。如需调整请在终端向 AI 说明。';
+  } else {
+    message.textContent = '请选择方向或留下意见。只有明确批准所展示的设计和范围才是写入授权；修改意见或拒绝不代表批准。';
+  }
 }
 
 function refreshScreen() {

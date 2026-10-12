@@ -128,6 +128,33 @@ test('invalid screens and malformed answers produce recoverable responses', asyn
   assert.equal((await fetch(`${viewer.origin}/confirm`, { method: 'POST', headers: viewer.headers, body: 'x'.repeat(20_000) })).status, 413);
 });
 
+test('agent-authored HTML and optional styles survive the screen protocol', async t => {
+  const styles = await readFile(new URL('../skills/planet-visual/assets/style-template.html', import.meta.url), 'utf8');
+  assert.doesNotMatch(styles, /<(?:script|form|button|input)\b|https?:\/\//i);
+  const html = `${styles}<section><h2>Existing capability and extension</h2><table><tr><td>Existing validation</td><td>Add formatting</td></tr></table><svg viewBox="0 0 100 40"><text x="5" y="20">Shared owner</text></svg></section>`;
+  const viewer = await session(t, { id: 'implementation-example', mode: 'view', title: 'Implementation example',
+    panels: [{ title: 'Agent-authored explanation', html }] });
+  const screen = await (await fetch(`${viewer.origin}/screen`, { headers: viewer.headers })).json();
+  assert.equal(screen.panels[0].html, html);
+  assert.equal(screen.panels[0].diagram, undefined);
+});
+
+test('correction responses are recorded without generic authorization claims', async t => {
+  const viewer = await session(t, { id: 'design-review', mode: 'decision', title: 'Review the proposed scope',
+    choices: [{ id: 'revise', label: 'Needs changes; do not implement' }] });
+  const screen = await (await fetch(`${viewer.origin}/screen`, { headers: viewer.headers })).json();
+  const response = await fetch(`${viewer.origin}/confirm`, { method: 'POST', headers: viewer.headers,
+    body: JSON.stringify({ screen: screen.id, revision: screen.revision, choice: 'revise', feedback: 'Do not write; revise the design.' }) });
+  assert.equal(response.status, 200);
+  const reply = await response.json();
+  assert.equal(reply.choice, 'revise');
+  assert.equal(reply.feedback, 'Do not write; revise the design.');
+  assert.equal(Object.hasOwn(reply, 'authorized'), false);
+  const client = await (await fetch(`${viewer.origin}/app.js`)).text();
+  assert.ok(client.includes('已记录你的回复'));
+  assert.ok(!client.includes('已确认并授权'));
+});
+
 test('screen validation preserves semantics and rejects conflicting input', () => {
   const screen = validateScreen(decision);
   assert.deepEqual(validateScreen({ ...decision, revision: 'untrusted' }), screen);
