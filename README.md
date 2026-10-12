@@ -32,7 +32,9 @@ codex plugin marketplace add ecstayalive/PlanET
 codex plugin add planet@planet
 ```
 
-Start a new session after installation. If your Codex version does not provide `plugin add`, update it or install PlanET from the added marketplace in the desktop client's Plugins directory. [OpenAI Docs: plugin marketplaces](https://developers.openai.com/plugins/build/plugins).
+Start a new session after installation. In Codex CLI, open `/hooks`, review PlanET's `SessionStart` command and trust it if acceptable. Installing or enabling the plugin does not grant hook trust; changed hook definitions require review again. If hooks are disabled or restricted by host policy, use `/skills` to select PlanET explicitly. PlanET does not alter trust settings or bypass them. [Codex hook trust](https://developers.openai.com/codex/hooks).
+
+If your Codex version does not provide `plugin add`, update it or install PlanET from the added marketplace in the desktop client's Plugins directory. [OpenAI Docs: plugin marketplaces](https://developers.openai.com/plugins/build/plugins).
 
 ### Pi
 
@@ -46,19 +48,21 @@ Start a new Pi session after installation. [Pi package installation reference](h
 
 ### Use PlanET
 
-Use your agent normally after installation. With startup loading enabled, PlanET's engineering guidance applies to coding tasks automatically. You can also ask the agent to apply PlanET to an implementation, refactor, or code review. For explicit invocation:
+Use your agent normally after installation. With startup loading enabled and trusted, a compact bootstrap directs the agent to read the complete PlanET policy before coding work, unless the current policy is already in active context. It does not inject the full policy into every startup prompt. You can also ask the agent to apply PlanET to an implementation, refactor, or code review. For explicit invocation:
 
 | Agent | Engineering skill | Visual workspace |
 | --- | --- | --- |
 | Claude Code | `/planet:planet` | `/planet:planet-visual` |
-| Codex | `$planet:planet` | `$planet:planet-visual` |
+| Codex | `/skills` → PlanET engineering skill | `/skills` → PlanET visual skill |
 | Pi | `/skill:planet` | `/skill:planet-visual` |
 
 The agent inspects existing modules, establishes clear responsibilities and interfaces, and obtains your write authorization before modifying code. When helpful, it delivers a visual companion board for layout or architecture comparison.
 
 For example: **“Add Markdown export using the existing export pipeline.”** PlanET guides the agent to find the current implementation, define the exporter's module contract, and present the design before modifying code. To inspect the design, add **“Show how the new exporter fits into the existing flow.”**
 
-In Codex, you can also select either skill from the skill picker. Automatic startup loading depends on host hook support and trust settings; explicit skills remain available when hooks are disabled. PlanET has no cloud backend, telemetry, or runtime dependencies. Model inference is handled by your coding agent.
+Explicit invocation loads the same skill without needing the startup hook, provided the plugin/skill is installed and enabled. Native implicit selection can miss a relevant skill; use explicit invocation when activation matters. PlanET has no cloud backend, telemetry, or runtime dependencies. Model inference is handled by your coding agent.
+
+After updating the installed package, start a fresh session to avoid retaining earlier policy/reference reads. Pi's `/reload` rescans installed resources and refreshes the bootstrap; it does not synchronize an unpublished checkout with the installed copy.
 
 ## Principles
 
@@ -110,19 +114,23 @@ An optional [evidence recorder](skills/planet/references/evidence.md) ships insi
 
 ## Skill structure and context cost
 
-- **`planet`** holds the shared engineering policy loaded by startup adapters when enabled. Its compact body combines CUPID properties, simple-design trade-offs, seven operating principles, and a concrete execution contract.
-- **`planet-visual`** is loaded when diagrams, layout previews, or visual comparisons help. Its full instructions are not included in the startup policy.
-- **Reference documents** are linked with explicit reading conditions, so detailed design guidance and screen schemas are consulted only when relevant.
+- **Startup bootstrap:** One shared loading instruction, installed policy path and SHA-256 core revision; no full engineering policy, visual instructions or reference bodies. Non-coding tasks do not need those bodies.
+- **`planet`:** The unchanged complete policy is read before coding work unless its current revision is already in active context. After compaction, a summary is not a substitute for the full policy; read it again if absent. A loading failure must be reported before proceeding.
+- **`planet-visual` and references:** Loaded only for their stated task conditions, not preloaded for every task. Reuse unchanged guidance already in context.
 
-Whitespace cleanup reduces formatting overhead, not the amount of guidance. Fewer lines do not imply proportionally fewer tokens; actual token counts depend on the model's tokenizer.
+The bootstrap revision fingerprints `SKILL.md`, not references, assets or the user's source. Its stable instruction text precedes installation-specific metadata. Smaller startup bytes are not proportional token savings for a complete coding task: needed policy and references still occupy context once read. Adapter tests check a conservative startup-byte budget for this checkout, not model compliance.
 
-## Pi prompt-prefix stability
+## Prompt-prefix stability and caching
 
-PlanET snapshots its shared instructions once when the extension loads. In current Pi, it contributes one stable `planet` system-prompt section, leaving the host's existing sections and tools intact. Repeated turns use identical content and ordering; an unchanged section produces no new section delta. After compaction, the same section is restored. Reload the extension to adopt policy edits.
+Claude Code and Codex receive the same deterministic bootstrap through their trusted `SessionStart` hook for startup, resume, clear and compact. The matcher accepts the supported source names rather than matching arbitrary substrings. Hook delivery and native skill activation remain host responsibilities.
 
-For older Pi, or a prompt forced by another extension, PlanET appends the same stable text to the existing prompt and avoids duplicate appends. It never inserts synthetic user messages into conversation history, prepends changing instructions, or injects session IDs, timestamps, screen content, or progress into the prefix.
+Pi snapshots the bootstrap once per extension load. In current Pi, it contributes one stable `planet` system-prompt section, leaving existing sections and tools intact. Repeated turns use identical content; after compaction, the same section is restored, with instructions to reload missing full policy. Reload the extension to adopt core-policy edits.
 
-This avoids cache invalidation caused by PlanET itself. Actual cache hits still depend on the provider, model, cache lifetime, other extensions, tools, and history; the plugin cannot promise a cache-hit percentage.
+For older Pi or a prompt forced by another extension, PlanET owns a named bootstrap block. It replaces a stale block in place and removes duplicate complete blocks, preserving surrounding text and position even when another extension follows it. Partial or similar-looking markers are not treated as complete owned blocks. Existing full-policy injections from older releases are not retroactively removed; start a fresh session after upgrading.
+
+PlanET adds no synthetic user messages, timestamps, session IDs, task progress or screen content to the prefix. An unchanged installation and core policy produce identical bootstrap text; policy/path changes intentionally update it. Other extensions can still override a prompt, and host compaction can rewrite history.
+
+Stable rendered prefixes are necessary, not sufficient, for cache reuse. Model eligibility, cache lifetime, routing, tool schemas, request settings and host-managed cache boundaries also matter. PlanET does not override provider parameters or pad prompts to reach a cache threshold. Measure actual cache-read tokens and input tokens from native host/provider usage over comparable runs, including cold starts; never infer a hit percentage from adapter tests or byte savings. See [OpenAI prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching) and [Claude prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching).
 
 ## Visual workspace
 
