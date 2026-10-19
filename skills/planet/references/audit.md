@@ -1,17 +1,6 @@
-# Measurable evaluation and independent review
+# Full seven-principle audit
 
-This is PlanET's shared operational rubric for the existing seven principles, not a new principle set or a universal code-quality score. Apply it to the user's actual project and task, not just PlanET benchmarks. A separate reviewer provides independent evidence, not permission to write.
-
-## Close the user's task with evidence
-
-1. Before implementation, identify the requested outcomes, affected contracts and critical scenarios. Inspect the project's native compiler, tests, static checks and conventions; use those tools rather than imposing a language-specific suite. Separate existing defects/edits from this task. Keep the basis in conversation for small changes.
-2. In the aligned design, name the acceptance and preservation scenarios, including meaningful error paths and operational bounds. Map them to existing checks or proposed tests within the write scope. Planned checks are not passed checks. Extend useful tests; never weaken assertions to obtain green output.
-3. After implementation, inspect the actual diff and execute the agreed checks under host permissions. Bind results to the source revision checked. A command's exit zero is not a count of covered scenarios: cite the assertions and behavior each scenario exercises. For persisted evidence, optionally use the installed [recorder](evidence.md); no project setup or PlanET checkout is required.
-4. Give a permitted reviewer the original decisions, baseline, current diff and execution evidence. It independently checks contracts, assertions, failure paths, structural trade-offs and one plausible follow-up's locality. Report code observations separately from command results and predictions. When delegation is unavailable, disclose self-review rather than inventing independent evidence.
-5. Reconcile findings against code and user decisions. Repair confirmed issues within scope, rerun affected checks, and obtain focused re-review at the new revision. Unresolved material correctness/contract violations prevent a completion claim; missing critical evidence remains explicitly unverified. Scope-changing fixes return to the user. Stop after the agreed criteria are satisfied, not after a target score or endless optional polish.
-6. Give the user a compact closure: what changed and why, preserved behavior, applicable verified scenarios/total with material unknowns, unresolved risks and review limits. Keep detailed counts/citations available for inspection, not a mandatory seven-item report.
-
-The recorder only checks artifact consistency. Real quality still depends on meaningful project checks, independent inspection and user judgment; host permissions and protected artifacts provide stronger boundaries where available. Product-level behavioral benchmarks separately test whether this workflow improves results.
+Run this audit only when the user or operator asks for one, for example before a release or when comparing skill versions. It measures all seven principles with explicit units against a fixed revision. It is an operational rubric, not a universal code-quality score, and an auditor provides evidence, not permission. Ordinary tasks close with the policy's Verify step and, for skeletons, the [conformance check](skeleton.md#conformance-check).
 
 ## Freeze the evaluation basis
 
@@ -64,19 +53,9 @@ The same evidence serves these lenses; do not award extra points for naming the 
 | No duplicated knowledge | P2 policy sources and P3 parallel paths |
 | Fewest necessary elements | P1 justification and P2 invariant preservation: removal cannot sacrifice the earlier goals |
 
-## Keep quality, alignment, and authority separate
+## Audit handoff
 
-Record a technical verdict (`ready`, `needs_changes`, or `insufficient_evidence`) and authorization (`confirmed`, `pending`, `rejected`, or `unknown`) separately, with their evidence. Technical readiness never grants authority. Known absence of approval is pending; missing access to the conversation receipt is unknown.
-
-A design can be ready to discuss with listed user decisions still open, but it is not ready to implement until consequential decisions are resolved and its scope is explicitly authorized. After a changed outcome, contract, or scope, re-align with the user and update review coverage. Minor choices within approved contracts do not require another gate.
-
-Hard failures cannot be averaged away: unauthorized writes, unauthorized scope changes, confirmed change-introduced correctness/security/compatibility regressions, or fabricated evidence. Missing critical verification is insufficient evidence, not an assumed pass. Unrelated pre-existing defects are separate findings, not automatic reasons to block or rebuild the entire system.
-
-This rubric is instruction-based. It does not mechanically prevent writes, prove a model will comply, or replace host permission controls.
-
-## Independent agent handoff
-
-After implementation, request a separate read-only review when the host supports it and operator/project instructions permit delegation. An existing authorized reviewer workflow can fulfill this requirement using this rubric. Do not launch another competing workflow or additional agents automatically. Without delegation support/permission, disclose that independent review was not performed; self-check may still supply evidence but is not a substitute claim.
+When a full audit is requested, give a separate read-only auditor the packet below if the host supports it and operator/project instructions permit delegation. An existing authorized reviewer workflow can fulfill this using this rubric. Do not launch another competing workflow or additional agents automatically. Without delegation support/permission, disclose that independent audit was not performed; self-check may still supply evidence but is not a substitute claim.
 
 Provide a compact, cold-start-complete packet:
 
@@ -115,3 +94,13 @@ A compact report can use this shape; illustrative nulls below mean no measuremen
 For count metrics use `count` (null when unknown), units and citations instead of inventing a denominator. For non-applicable coverage use total 0 only when absence was established, plus a reason. All seven principles must be accounted for in a full review, including justified inapplicability; report limits if only a subset was commissioned. A structured report checks observability, not automatic scoring truth.
 
 The parent adjudicates findings against current code and user decisions. Fix confirmed issues within authorized scope, then obtain focused re-review of the changed evidence and its impact. Scope-changing fixes return to the user. Preserve outstanding findings and review-version history; do not repeat broad reviews merely for optional polish. Never report an earlier review as covering later unreviewed changes.
+
+## Verdict and authority
+
+Record a technical verdict (`ready`, `needs_changes`, or `insufficient_evidence`) and authorization (`confirmed`, `pending`, `rejected`, or `unknown`) separately, with their evidence. Technical readiness never grants authority. Known absence of approval is pending; missing access to the conversation receipt is unknown.
+
+A design can be ready to discuss with listed user decisions still open, but it is not ready to implement until consequential decisions are resolved and its scope is explicitly authorized. After a changed outcome, contract, or scope, re-align with the user. Minor choices within approved contracts do not require another gate.
+
+Hard failures cannot be averaged away: implementation writes before authorization, unauthorized scope changes, confirmed change-introduced correctness/security/compatibility regressions, or fabricated evidence. Missing critical verification is insufficient evidence, not an assumed pass. Unrelated pre-existing defects are separate findings, not automatic reasons to block or rebuild the entire system.
+
+This audit is instruction-based. It does not mechanically prevent writes, prove a model will comply, or replace host permission controls.

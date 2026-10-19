@@ -31,21 +31,11 @@ Evaluate the actual problem before reaching for a pattern:
 
 For a proposed abstraction, state its present responsibility, the complexity it hides, and its cost to callers. Imagine removing it: does complexity vanish, or does a meaningful rule, boundary, or lifecycle become scattered? Keep the abstraction in the latter case. Do not require multiple implementations when a real invariant or external boundary already justifies the contract.
 
-Check callers, tests, error behavior, state ownership, and compatibility before extending code. Include partial implementations in the capability inventory: identify the missing behavior and extend or repair the existing owner first. If it cannot meet the requirement, make the smallest justified refactor. A replacement needs an observed limitation tied to the requested outcome, an explanation of why local repair is insufficient, and a compatibility/migration plan. Unrelated pre-existing defects are separate findings, not justification to rebuild the system.
-
-## Design completion and review
-
-Replay the user's intended outcomes, observable acceptance conditions, constraints, and non-goals before presenting the change. Distinguish actual user decisions from assumptions, agent recommendations, and delegated implementation details. Resolve consequential differences in conversation rather than choosing an unapproved default. A design brief then grounds the change in existing capabilities and gaps, assigns changed behavior to owners, explains affected contracts, and identifies verification and write scope. Small tasks need only a few sentences; do not invent interfaces or documents to fill a template.
-
-Before writes, obtain authorization for the presented design and decisions. A correction request or rejected option is not approval. While implementing an approved design, a visual is a view unless a new consequential choice is needed. Its format can be HTML, an example, or a diagram; it explains the design rather than defining the engineering process. A substantive outcome/contract/scope change returns to alignment; a minor detail inside the approved contract does not need another approval.
+## Follow-up locality and review findings
 
 For maintainability, choose one plausible follow-up change and locate where it would belong. Check whether it would duplicate policy or require coordinated changes to independent owners. Preserve a useful seam without implementing that future feature. Fewest files, lowest complexity, or highest coverage alone cannot establish quality.
 
-A review finding needs a concrete location, consequence, and simpler alternative. For example: two exporters define the same validation rule, so a validation change can produce inconsistent errors; put both behind the existing validation path. "Violates SOLID", "needs a strategy pattern", or "is not CUPID" is not evidence.
-
-## Review using the shared standard
-
-Use [evaluation.md](evaluation.md) for the seven principles' counting rules, CUPID/simple-design mapping, user-decision checks, and independent-agent handoff. Review the actual code and diff against a fixed scope and revision; author explanations alone are not evidence. Group repeated evidence without reducing coverage. Keep technical readiness and user authorization separate, and disclose missing review capability rather than relabeling self-review as independent assessment.
+A review finding needs a concrete location, consequence, and simpler alternative. For example: two exporters define the same validation rule, so a validation change can produce inconsistent errors; put both behind the existing validation path. "Violates SOLID", "needs a strategy pattern", or "is not CUPID" is not evidence. Review the actual code and diff against a fixed scope and revision; author explanations alone are not evidence.
 
 ## Sources
 

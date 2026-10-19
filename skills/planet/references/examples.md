@@ -78,19 +78,32 @@ business rules that materially change outcomes (e.g. billing cutoff timezones),
 formulate a clear design proposal with trade-offs, discuss it with the user, and
 obtain agreement as part of the design phase.
 
-## Independent evaluation is not authorization
+## A skeleton contest
 
-The implementing agent gives a separate permitted reviewer the user decisions, approved design, exact change boundary, code/diff, and check evidence. The reviewer uses [evaluation.md](evaluation.md), reads the artifacts, and can return, for example, capability inspection `2/2` but contract accounting `1/2`, citing the unexamined error path. These are illustrative counts, not results from this repository. Do not average them into a reassuring total score.
+In an illustrative refunds repository, the user asks for scheduled refunds. `refunds.mjs` owns eligibility and deadline rules; `refund-worker.mjs` runs queued jobs.
 
-The parent fixes a confirmed missing error-path check within the approved scope and obtains focused re-review. If the proposed fix changes an approved failure contract, first return to the user. A reviewer saying "ready" cannot approve that contract change. If no separate agent is available or permitted, say independent review was not performed.
+**Proposal A.** The author extends the existing job queue rather than adding a scheduler service. It writes a skeleton: `scheduleRefund(orderId, runAt)` in `refunds.mjs`, a `refund.scheduled` job type in the worker's existing handler map, stubs that throw `not implemented`, and the checkout and support-tool call sites rewritten to use `scheduleRefund`. Doc comments state that eligibility is rechecked at execution time and that payment errors keep their current types.
+
+**Challenge.** A fresh challenger edits the skeleton in place and makes two changes:
+
+1. It moves the deadline check into the worker handler, arguing that the worker should reject stale jobs itself.
+2. It replaces the `runAt` timestamp with a `delay` in milliseconds, arguing that callers compute delays anyway.
+
+**Rebuttal.** The author restores change 1 with evidence: the deadline rule already lives in `canRefund` in `refunds.mjs`, so a copy in the worker would give one rule two owners, and a deadline-policy change would need two coordinated edits. The worker calls `canRefund` at execution time instead. The author concedes change 2 after inspecting callers: both call sites already hold a delay, not a timestamp, so `delay` removes a conversion from each caller.
+
+**Reply.** The challenger concedes change 1 and adds nothing new. Nothing remains unresolved.
+
+**Present.** The user sees the final skeleton, a summary noting one challenger change accepted and one rejected with the evidence for each, and a request to authorize implementation. If the challenger had held change 1 with new evidence, both versions would be shown side by side with the author's recommendation. Neither agent's verdict substitutes for that authorization.
+
+Without a permitted challenger, the author presents A beside the strongest alternative it rejected (here, a separate scheduler service with its own retry state) and says that no agent contest took place.
 
 ## Close a user task without manufacturing a score
 
 In the illustrative export project, agree on five scenarios: CSV preservation, JSON preservation, Markdown formatting, escaping, and invalid-input behavior. One successful `npm test` command is not `1/1` acceptance coverage. Inspect its assertions: if only four scenarios are exercised, report `4/5` with invalid-input behavior unverified, then add the missing check within approved scope. An absent assertion is not a passed scenario.
 
-The reviewer also finds that two formatters now copy validation. The parent checks the actual diff, restores the existing validation owner and reruns the affected checks. Obtain focused review of that new source revision; the earlier test/review receipt no longer covers it. State the result concisely: preserved formats, the chosen extension point, verified scenarios and review limits. These counts illustrate a user workflow, not measured results from PlanET.
+The conformance check finds that two formatters now copy validation, which the approved skeleton left in the shared export path. The agent restores the existing validation owner and reruns the affected checks; the earlier test receipt no longer covers the new source revision. State the result concisely: preserved formats, the chosen extension point, verified scenarios and review limits. These counts illustrate a user workflow, not measured results from PlanET.
 
-Without a permitted reviewer, disclose that the same code received self-check only. Without the optional evidence recorder, retain native tool outputs and their revision references. Neither limitation justifies inventing a pass or requiring the user to install a new framework.
+The conformance check is the agent's own; report it as such rather than as independent review. Without the optional evidence recorder, retain native tool outputs and their revision references. Neither limitation justifies inventing a pass or requiring the user to install a new framework.
 
 ## Display or wait
 

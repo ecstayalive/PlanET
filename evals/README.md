@@ -1,49 +1,65 @@
 # Behavioral evaluation
 
-These cases assess engineering judgment, not merely whether the plugin loads. They are an evaluation design, not evidence that any model has passed. Quality properties and process compliance are evaluated separately. The user-facing task loop lives in the [shared standard](../skills/planet/references/evaluation.md), with an optional [evidence recorder](../skills/planet/references/evidence.md); this directory evaluates the skill product, not a required setup for its users.
+These cases test whether PlanET leads a model to write more elegant code at an acceptable context cost. They are an evaluation design, not evidence that any model has passed. This directory evaluates the skill product; users need none of it.
+
+No industry standard measures code elegance. [ISO/IEC 25010](https://iso25000.com/index.php/en/iso-25000-standards/iso-25010/57-maintainability) names maintainability's characteristics without scoring them, and static metrics often contradict each other. Recent work measures what maintainability costs: the effort of later changes ([MaintainCoder](https://arxiv.org/abs/2503.24260)) and repository health across dependent changes ([SWE-STEPS](https://arxiv.org/abs/2604.03035)). These cases follow that approach.
 
 ## Prepare controlled runs
 
-For each case in `cases.json`, construct a small isolated repository containing the stated context, actual callers, and meaningful behavior tests. Specify missing fixture details before comparing runs. Give the agent the task and repository, not the `assess`, `properties`, or follow-up grading criteria.
+For each case in `cases.json`, build a small isolated repository with the stated context, real callers, meaningful behavior tests, and hidden tests the agent never sees. Write the case's `reference` solution in that repository's terms before any run. Give the agent the task and repository only, never `route`, `reference`, `assess`, or follow-up fields.
 
-Compare **without PlanET**, **current PlanET**, and a **candidate revision** with the same host, model, settings, tool permissions, starting files, and business requirements. Snapshot skill versions before edits. Disable startup adapters and implicit PlanET instructions for the no-skill baseline; a fresh child of a PlanET-loaded session is not automatically a clean baseline. Record what guidance was actually loaded. Different models or hosts are separate evaluation groups.
+Compare **without PlanET**, **current PlanET**, and a **candidate revision** with the same host, model, settings, tool permissions, starting files, and scripted user responses. Snapshot skill versions before edits. Disable startup adapters and implicit PlanET instructions for the no-skill baseline; a fresh child of a PlanET-loaded session is not a clean baseline. Different models or hosts are separate groups.
 
-Use the same user constraints and scripted responses in each condition. State review-only restrictions and required write approval explicitly where applicable. For an unapproved implementation task, permit exploration and design, then approve only the predeclared scope after a proposal; record writes before that approval as violations. Answer consequential business questions with the same predefined decisions. Cases with existing approval must include that actual design and approval in the starting conversation, not just tell the evaluator that approval exists. Do not silently approve expanded scope or reward repeated approval requests.
+Script the user identically in each condition. For an unapproved implementation task, permit exploration, design, and a skeleton within the task's paths, then approve only the predeclared scope; behavior implemented before approval is a violation, and so is any write when the scripted user forbids writes. Answer consequential business questions with the same predefined decisions. Cases with existing approval must include that design and approval in the starting conversation.
 
-Loading-specific cases cover bootstrap activation, compaction/update restoration and explicit skill use with an untrusted hook. Grade these routing conditions for current/candidate installations; absence of PlanET in a no-skill baseline is N/A, not a failure. Record the actual policy reads/inline loads and native cache usage, not just what the agent says was loaded. Unrelated non-coding prompts should not preload policy/reference bodies. Compare complete-task tokens and outcomes as well as startup size: lazy loading can add a read and does not guarantee unchanged behavior or cheaper complete tasks.
+Do not delegate or call paid models without the operator's authorization. This protocol does not launch model runs. Keep generated repositories, transcripts, and results outside this repository.
 
-Do not delegate or call paid models without authorization from the evaluation's operator. This protocol does not launch model runs. Keep generated repositories, transcripts, and results outside this repository.
+## Grade in separate tracks
 
-## Assess properties using evidence
+Report each track per case and per condition. Never fold tracks into one weighted score: a correctness or authorization failure fails the run regardless of the rest.
 
-Use the shared [evaluation standard](../skills/planet/references/evaluation.md) for unit inventories, the seven principles' ratios/counts, evidence status, and independent-review handoffs. Freeze outcomes, decisions, scope, and revision before comparing counts. Include partial capabilities and require outcome-linked evidence for replacement. Do not create another weighted grading scheme here.
+### 1. Follow-up effort (primary)
 
-`properties` identifies relevant CUPID dimensions; an empty list marks a process-focused case. It is a review lens, not a requirement to display an acronym checklist. Use `assess` to grade the design and actual diff. Judge interface contracts and behavior, not mentions of CUPID, SOLID, or pattern names.
+When a case has `followUp`, keep the initial diff and checks, then give the same follow-up task and approval in each condition, starting from that condition's own result. Measure:
 
-| Dimension | Observable evidence |
-| --- | --- |
-| Composable | Caller-facing interface, explicit required setup, necessary dependencies, and hidden ordering requirements |
-| Unix philosophy | Coherent module purpose, ownership of related behavior, and absence of needless pass-through fragments |
-| Predictable | Results, state changes, errors, relevant bounds, and meaningful normal/failure tests |
-| Idiomatic | Reuse of language and project conventions, including existing dispatch and error contracts |
-| Domain-based | Business vocabulary, explicit domain rules, and ownership aligned with the problem |
+- diff size and the number of distinct owners (modules) the follow-up touches;
+- copies of an existing rule the follow-up had to add or edit;
+- hidden-test pass rate after the follow-up, for old and new behavior;
+- `followUpAssess` criteria, each met or violated with a citation.
 
-Check simple design by inspecting useful tests, clear intent, duplicated knowledge, and unnecessary elements. Do not reward fewer functions when it removes a meaningful invariant, or fewer files when it hides unrelated responsibilities together. Complexity counts, coverage, and duplication detectors are signals to investigate, not a universal quality score.
+Lower effort with preserved behavior is the strongest evidence of elegant structure. Add follow-ups to new cases wherever a natural next change exists.
 
-For each case-specific criterion, record **met**, **violated**, **unknown**, or **not_applicable**, with a file/symbol, diff, test result, or transcript reference. Include numerator, denominator, and units for coverage; violation counts cite instances. Unknown evidence is not a pass, and an empty denominator is not 100%. Group repeated evidence without reducing review coverage. This is a local operational rubric, not a standardized CUPID score. Correctness regressions and authorization violations fail the run regardless of other findings.
+### 2. Static signals against the reference
 
-## Independent assessment within a run
+Compare the diff with the case's `reference`, read by a person:
 
-When delegation is supported and permitted, the implementing agent hands code review to a separate read-only agent using the shared standard. The evaluation operator still checks its findings; a model-produced measurement is not ground truth. Record reviewer identity, reviewed design/diff revision, evidence, parent disposition, and focused re-review after corrections. Keep this in-run code review separate from comparing skill versions: neither one proves the other effective.
+- new abstractions, files, and indirection layers beyond the reference (speculative design);
+- duplicated rules: copies of a rule the fixture already owns;
+- caller burden: required setup steps, ordering constraints, and parameters a caller must supply;
+- change in cognitive complexity of touched functions, using one tool across all conditions.
 
-For no-review-capability/permission cases, expect honest disclosure rather than a hidden alternate process or a fabricated independent pass. For alignment cases, provide actual user decisions and correction/rejection receipts; a reviewer verdict or browser submission must not stand in for user authorization.
+These are signals to investigate, not scores. Exceeding the reference is fine when it buys a stated, real benefit; record the reason. Fewer elements are never better on their own.
 
-## Follow-up changes and process metrics
+### 3. Blind pairwise judgment
 
-When a case has `followUp`, first retain the initial diff and checks. Then provide the same follow-up task and approval protocol in each condition, starting from that condition's resulting implementation. Evaluate `followUpAssess`: where the change belongs, whether policy must be duplicated, compatibility, and effort to complete it. The follow-up is an actual later task, not permission to build speculative features during the first task.
+Show a judge two anonymized diffs for the same case, plus the task and repository, never the condition or transcript. The judge picks the more maintainable diff or a tie, and must name a location and a concrete consequence (for example, "the deadline rule exists twice in B"). A reason without a consequence counts as a tie. Swap the diff order across repetitions to cancel position bias, and have a person spot-check a sample of judgments, including all disagreements with track 1. A model judgment is not ground truth.
 
-Save the design, diff, transcript, executed checks, question count, and tool/model cost. Record first-write versus approval order, scope changes, meaningful versus avoidable questions, and evidence for completion claims separately from code quality. Fewer questions is not better when a necessary decision was skipped.
+### 4. Process compliance
 
-Repeat each selected case under each condition before drawing conclusions, and include unseen tasks to check generalization. An initial three repetitions per condition is exploratory, not statistical proof. Report variation and per-case failures alongside time/token costs; do not hide correctness or permission failures inside an average score. Inspect real outputs rather than relying only on model self-grading.
+Grade `assess` criteria as **met**, **violated**, **unknown**, or **not_applicable**, each with a file, diff, test, or transcript reference. Unknown is not a pass. Record first-write versus approval order, scope changes, and necessary versus avoidable questions. Fewer questions is not better when a necessary decision was skipped. For skeleton cases, judge each contest disposition on the code: conceding to a correct challenger is right, conceding to a wrong one is a failure, and so is defending a weaker proposal. Without delegation, expect the user to be offered the skeleton beside a real rejected alternative and an honest statement that no contest took place.
 
-`npm test` covers adapters, visual protocol invariants, and evidence-recorder behavior in temporary user repositories. It does not run these model evaluations or prove generated code is elegant. Record tested versions, models, hosts, cases, and limitations before making behavioral effectiveness claims.
+### 5. Necessity and cost
+
+Each case names its expected `route`; `scripts/check.mjs` defines what each route loads and its token budget. Record:
+
+- the PlanET files actually read, against the route's files;
+- skeletons, contests, or subagents run on a `small` route case, each a violation;
+- total input tokens, cache-read tokens, subagent runs, and wall time from native host usage.
+
+Loading-specific cases cover bootstrap activation, compaction and update restoration, and explicit skill use with an untrusted hook. Grade them only for current and candidate installations. Unrelated non-coding prompts should load no policy or reference bodies.
+
+## Interpret results
+
+Repeat each case under each condition, and include unseen tasks to check generalization. Three repetitions per condition is exploratory, not statistical proof. Report per-case results and variation alongside cost; do not hide failures in an average.
+
+`npm test` covers adapters, visual protocol invariants, and the evidence recorder. `npm run check` enforces route budgets. Neither runs these evaluations or proves generated code is elegant. Record tested versions, models, hosts, cases, and limitations before claiming behavioral effects. For a per-principle audit of a single change, use the [audit rubric](../skills/planet/references/audit.md).

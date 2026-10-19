@@ -32,7 +32,8 @@ test('shell hook supplies a compact revision-bound bootstrap, not the full polic
   assert.ok(output.additionalContext.includes(JSON.stringify(policyPath)));
   assert.ok(output.additionalContext.includes(`sha256:${createHash('sha256').update(policy).digest('hex')}`));
   assert.ok(!output.additionalContext.includes('## Seven operating principles'));
-  assert.match(output.additionalContext, /Before coding work, read/);
+  assert.match(output.additionalContext, /inspecting, designing, reviewing, or changing code/);
+  assert.match(output.additionalContext, /Before your first step on such a task, even design-only or read-only, read/);
   assert.match(output.additionalContext, /After compaction, a summary is insufficient/);
   assert.match(output.additionalContext, /If unavailable, stop coding/);
   assert.ok(Buffer.byteLength(output.additionalContext) < 1024);

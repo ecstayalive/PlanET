@@ -48,7 +48,7 @@ Start a new Pi session after installation. [Pi package installation reference](h
 
 ### Use PlanET
 
-Use your agent normally after installation. With startup loading enabled and trusted, a compact bootstrap directs the agent to read the complete PlanET policy before coding work, unless the current policy is already in active context. It does not inject the full policy into every startup prompt. You can also ask the agent to apply PlanET to an implementation, refactor, or code review. For explicit invocation:
+Use your agent normally after installation. With startup loading enabled and trusted, a compact bootstrap directs the agent to read the complete PlanET policy before its first step on any coding task, including design-only or read-only work, unless the current policy is already in active context. It does not inject the full policy into every startup prompt. You can also ask the agent to apply PlanET to an implementation, refactor, or code review. For explicit invocation:
 
 | Agent | Engineering skill | Visual workspace |
 | --- | --- | --- |
@@ -56,7 +56,7 @@ Use your agent normally after installation. With startup loading enabled and tru
 | Codex | `/skills` → PlanET engineering skill | `/skills` → PlanET visual skill |
 | Pi | `/skill:planet` | `/skill:planet-visual` |
 
-The agent inspects existing modules, establishes clear responsibilities and interfaces, and obtains your write authorization before modifying code. When helpful, it delivers a visual companion board for layout or architecture comparison.
+The agent inspects existing modules, writes the design as a reviewable skeleton of interfaces and call sites, has a second agent contest it, and obtains your authorization before implementing behavior. When helpful, it delivers a visual companion board for layout or architecture comparison.
 
 For example: **“Add Markdown export using the existing export pipeline.”** PlanET guides the agent to find the current implementation, define the exporter's module contract, and present the design before modifying code. To inspect the design, add **“Show how the new exporter fits into the existing flow.”**
 
@@ -70,7 +70,7 @@ After updating the installed package, start a fresh session to avoid retaining e
 2. **Keep related logic together.** Give behavior and state a clear owner. Inline meaningless private wrappers; preserve useful domain rules, boundaries, and lifecycles regardless of caller count.
 3. **Extend before replacing.** Inspect existing capabilities, callers, and tests. Reuse extension points, state, and error semantics; require evidence before replacing them.
 4. **Think in systems.** Trace affected inputs, outputs, state, failures, and compatibility. Check whether one plausible follow-up change would remain local, without implementing that future feature.
-5. **Design first and secure write authorization.** Present a grounded design with module responsibilities and affected contracts before modifying code. Obtain explicit authorization for its scope; reuse existing approval and realign if the scope changes.
+5. **Design first and secure implementation authorization.** Present a grounded design, as a brief or a code skeleton, with module responsibilities and affected contracts before implementing behavior. Obtain explicit authorization for its scope; reuse existing approval and realign if the scope changes.
 6. **Minimize trivial interruptions.** Inspect repository facts independently. Batch consequential questions with recommendations and trade-offs; use a visual companion only when seeing helps.
 7. **Name things by their role.** Use domain vocabulary for actions and actual responsibilities. Preserve established public APIs, attribution, and meaningful algorithm, protocol, or version names.
 
@@ -78,7 +78,7 @@ The policy lives in [the PlanET skill](skills/planet/SKILL.md). Host adapters lo
 
 The principles are language-agnostic. Your agent uses the repository's existing compiler, test runner, formatter, and conventions; PlanET provides engineering guidance rather than a language-specific toolchain.
 
-The working sequence is **Inspect → Design → Authorize → Implement → Simplify → Verify**. Before writes, the agent replays your goal, acceptance conditions, constraints, and decisions, then explains existing capabilities/gaps, proposed owners/contracts, structural choices, verification, and write scope. Small changes need only a few sentences, not mandatory plan files or interviews. Review-only requests stay review-only.
+The working sequence is **Inspect → Design → Skeleton → Contest → Authorize → Implement → Simplify → Verify**. Before implementing, the agent replays your goal, acceptance conditions, constraints, and decisions, then explains existing capabilities/gaps, proposed owners/contracts, structural choices, verification, and write scope. Small changes inside existing contracts need only a few sentences, not mandatory plan files or interviews. Review-only requests stay review-only.
 
 ## Code quality: CUPID and simple design
 
@@ -96,27 +96,39 @@ Use [Kent Beck's simple-design rules](https://martinfowler.com/bliki/BeckDesignR
 
 Evaluate the design and actual diff, not whether the agent names these frameworks. A plausible follow-up change helps assess maintainability: can it be made locally without copying policy or breaking existing behavior? Authorization and unnecessary questions are process measures, separate from code quality. [Design guidance](skills/planet/references/design.md) and [examples](skills/planet/references/examples.md) make these checks concrete.
 
-## User alignment and independent evaluation
+## User alignment and the skeleton contest
 
 Extend existing capabilities, including unfinished features, before introducing another implementation. Replacement needs evidence that an existing limitation blocks the requested outcome, that local repair is insufficient, and that compatibility/migration is addressed. Unrelated old defects do not justify a rewrite.
 
-The agent distinguishes your decisions from its recommendations and assumptions. Consequential outcome, contract, or scope changes return to you; corrections and rejected choices are not approval. Technical readiness and write authorization are separate judgments.
+The agent distinguishes your decisions from its recommendations and assumptions. Consequential outcome, contract, or scope changes return to you; corrections and rejected choices are not approval. Technical readiness and implementation authorization are separate judgments.
 
-After implementation, the skill calls for a separate read-only reviewer when the host supports it and operator/project instructions permit delegation. The reviewer inspects actual code, callers, diff, user decisions, and checks using the [shared evaluation standard](skills/planet/references/evaluation.md). Each principle has evidence-based coverage ratios or violation counts with named units; missing evidence is unknown, and empty denominators are not full marks. Repeated evidence can be grouped without hiding omissions. There is no reassuring weighted total that cancels a regression or unauthorized change.
+Review happens before implementation, where changes are cheap. When a change introduces an abstraction, changes a module interface, or moves responsibility between owners, the agent extends the existing pattern (or introduces one the feature requires) and writes a skeleton into your repository: interfaces with their contracts, stubs that fail explicitly, and the real call sites using them. You review it as a diff.
 
-The implementing agent reconciles findings, repairs within approved scope, and obtains focused re-review. A reviewer cannot authorize writes or expand the design. When delegation is unavailable or disallowed, report that limitation; self-check is not independent review. This is a workflow instruction, not a bundled subagent runtime or a mechanical write gate.
+A second agent with a fresh context then **contests** the skeleton, when the host supports delegation and your instructions permit it. It edits the skeleton directly, from small corrections up to a competing design, giving a concrete consequence for each change. The two agents compete: the original agent concedes, restores its version with a counter-argument, or merges, and the challenger gets one reply. Neither side wins by role; arguments rest on the shared principles, CUPID, and simple design. You then see the final skeleton, a summary of agreed changes, and both versions of any unresolved point with a recommendation. Without a second agent, you are the challenger: the agent shows its skeleton beside the strongest alternative it rejected.
+
+Neither agent can authorize implementation. After implementing, the agent checks conformance: the final diff must match the approved interfaces, or each deviation must have been re-approved. A full seven-principle [audit](skills/planet/references/audit.md) runs only when you ask for one. This is a workflow instruction, not a bundled subagent runtime or a mechanical write gate.
 
 ## Evaluation in your project
 
-PlanET applies the evaluation loop to your actual changes, not only to its own benchmark cases. Your agent uses your project's compiler, tests and static checks, maps acceptance and preserved contracts to real assertions, reviews the diff, and repairs confirmed findings within the approved scope. It reports useful coverage and material unknowns rather than a universal code-quality score. A permitted independent reviewer checks the current artifacts; later fixes need current verification and focused re-review.
+PlanET applies the evaluation loop to your actual changes, not only to its own benchmark cases. Your agent uses your project's compiler, tests and static checks, maps acceptance and preserved contracts to real assertions, reviews the diff, and repairs confirmed findings within the approved scope. It reports useful coverage and material unknowns rather than a universal code-quality score. Later fixes need current verification; an earlier check does not cover a later revision.
 
 An optional [evidence recorder](skills/planet/references/evidence.md) ships inside the core skill. With Node.js 22+ and Git, it snapshots the initial working tree, records explicitly authorized native commands, and flags stale check/review evidence. It works from your repository without a PlanET checkout or dependency installation; artifacts stay outside your source repository. It does not authenticate approval, enforce a sandbox or certify that model judgments are true. Without it, the same workflow uses native host evidence and discloses limitations. Small tasks need concise results, not mandatory report files.
 
 ## Skill structure and context cost
 
 - **Startup bootstrap:** One shared loading instruction, installed policy path and SHA-256 core revision; no full engineering policy, visual instructions or reference bodies. Non-coding tasks do not need those bodies.
-- **`planet`:** The unchanged complete policy is read before coding work unless its current revision is already in active context. After compaction, a summary is not a substitute for the full policy; read it again if absent. A loading failure must be reported before proceeding.
-- **`planet-visual` and references:** Loaded only for their stated task conditions, not preloaded for every task. Reuse unchanged guidance already in context.
+- **`planet`:** The compact core policy (principles, execution, and a routing table) is read before the first step of any coding task, including design and review, unless its current revision is already in active context. After compaction, a summary is not a substitute for the full policy; read it again if absent. A loading failure must be reported before proceeding.
+- **References and `planet-visual`:** Each is loaded only on its route, never preloaded. A skeleton task adds `skeleton.md`, which both the author and the challenger read; a challenger needs no separate policy. The seven-principle audit rubric loads only when you ask for an audit. Reuse unchanged guidance already in context.
+
+The agent takes only the steps a task needs: a small change inside existing contracts gets a short design, not a skeleton, contest, or subagent. `npm run check` enforces an approximate token budget for each route:
+
+| Route | Loads (besides the bootstrap) | Budget |
+| --- | --- | --- |
+| Small change | `SKILL.md` | 2k tokens |
+| Skeleton (author or challenger) | `SKILL.md`, `skeleton.md` | 4k |
+| Review | `SKILL.md`, `design.md` | 4k |
+| Visual | `SKILL.md`, `planet-visual` | 4k |
+| Audit, on request | `SKILL.md`, `audit.md` | 6k |
 
 The bootstrap revision fingerprints `SKILL.md`, not references, assets or the user's source. Its stable instruction text precedes installation-specific metadata. Smaller startup bytes are not proportional token savings for a complete coding task: needed policy and references still occupy context once read. Adapter tests check a conservative startup-byte budget for this checkout, not model compliance.
 
@@ -140,13 +152,13 @@ The visual workspace is a lightweight companion board, not a browser-based IDE o
 
 ![PlanET view mode showing the existing export flow, its Markdown extension, and a focused implementation](assets/visual-view.svg)
 
-- A **decision** requests a consequential choice or scoped write approval. Review the alternatives, then explicitly submit your direction or feedback. The example below compares two navigation layouts. Neither option is preselected. A request to revise or a rejection does not grant write authorization.
+- A **decision** requests a consequential choice or scoped implementation approval. Review the alternatives, then explicitly submit your direction or feedback. The example below compares two navigation layouts. Neither option is preselected. A request to revise or a rejection does not grant implementation authorization.
 
 ![PlanET decision mode comparing sidebar and top navigation with a response field and explicit confirmation](assets/visual-decision.svg)
 
 Ask the agent to show a design or comparison, then open the local link it shares. The agent prepares and updates the visual workspace. A view needs no reply. For a decision, review the alternatives, confirm your choice, and return to the conversation to continue.
 
-The workspace runs locally and supports agent-authored static HTML/SVG, examples, read-only code previews with file/symbol context, and written feedback. The style template contains presentation styles only; content and layout remain the agent's choice. Scripts and remote assets remain disabled in preview frames. Request adjustments in conversation; the agent updates the board. Submitted responses survive refresh, but do not automatically start an agent turn or imply approval. Only explicit approval of the presented design grants scoped write authorization, not permission to commit, push, deploy, or expand scope. Without a local browser, use conversation or a static preview.
+The workspace runs locally and supports agent-authored static HTML/SVG, examples, read-only code previews with file/symbol context, and written feedback. The style template contains presentation styles only; content and layout remain the agent's choice. Scripts and remote assets remain disabled in preview frames. Request adjustments in conversation; the agent updates the board. Submitted responses survive refresh, but do not automatically start an agent turn or imply approval. Only explicit approval of the presented design grants scoped implementation authorization, not permission to commit, push, deploy, or expand scope. Without a local browser, use conversation or a static preview.
 
 ## Identity and terminal display
 

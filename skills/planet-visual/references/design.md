@@ -30,6 +30,6 @@ Static frames allow inline styles and data images, but not scripts, remote asset
 
 ## Alignment remains in the conversation
 
-Make alternatives comparable, with visible consequences and a recommendation where appropriate. No option is preselected. Clearly state the design/scope a requested approval would cover. Confirmed submissions record responses; a correction or rejection is not write authorization. Detailed requirements, user decisions, and code refinements remain anchored in conversation and native tools.
+Make alternatives comparable, with visible consequences and a recommendation where appropriate. No option is preselected. Clearly state the design/scope a requested approval would cover. Confirmed submissions record responses; a correction or rejection is not implementation authorization. Detailed requirements, user decisions, and code refinements remain anchored in conversation and native tools.
 
 A view needs no reply and does not stop already authorized work. A decision waits for the actual consequential choice or scoped approval, regardless of whether it is explained with HTML, examples, or a diagram.

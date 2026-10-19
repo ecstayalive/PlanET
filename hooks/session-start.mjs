@@ -10,8 +10,8 @@ export const guidanceTag = 'planet-guidance';
 export function loadInstructions() {
   const policyPath = resolve(root, 'skills/planet/SKILL.md');
   const revision = createHash('sha256').update(readFileSync(policyPath)).digest('hex');
-  return `<${guidanceTag}>\nPlanET applies to coding tasks.\n`
-    + `Before coding work, read the policy file below unless the complete policy at this revision is in active context.\n`
+  return `<${guidanceTag}>\nPlanET applies to coding tasks: inspecting, designing, reviewing, or changing code.\n`
+    + `Before your first step on such a task, even design-only or read-only, read the policy file below unless the complete policy at this revision is in active context.\n`
     + `After compaction, a summary is insufficient; reload if the full policy is absent.\n`
     + `Load referenced docs and planet-visual only when relevant; reuse unchanged guidance.\n`
     + `If unavailable, stop coding and report the loading failure.\n`

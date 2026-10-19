@@ -9,8 +9,8 @@ Select the simplest useful medium: authored HTML for a walkthrough or layout, co
 For HTML, optionally copy [style-template.html](assets/style-template.html) and author your own markup. It supplies colors, typography, spacing, and reusable styles only. Read [design.md](references/design.md) for expression examples; no fixed sequence of panels is required.
 ## Display or decision
 - Use `mode: "view"` for diagrams, architectural overviews, and before/after comparisons. Share the URL and continue authorized work.
-- Use `mode: "decision"` when a consequential user choice or explicit write authorization is needed. Explain alternatives, consequences, and the proposed scope in the medium best suited to the question.
-- Browser responses count only after explicit submission. Match the screen and revision, then interpret the actual choice/feedback: only explicit approval of the described design authorizes writes. Corrections, rejection, or ordinary feedback do not. Detailed refinements remain in conversation and native developer tools; a visual does not replace user alignment.
+- Use `mode: "decision"` when a consequential user choice or explicit implementation authorization is needed. Explain alternatives, consequences, and the proposed scope in the medium best suited to the question.
+- Browser responses count only after explicit submission. Match the screen and revision, then interpret the actual choice/feedback: only explicit approval of the described design authorizes implementation. Corrections, rejection, or ordinary feedback do not. Detailed refinements remain in conversation and native developer tools; a visual does not replace user alignment.
 ## Start the local viewer
 Resolve the path below from this skill's installed directory. Node.js 22+ is required; no dependency installation, MCP server, or remote backend is needed.
 ```sh

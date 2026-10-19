@@ -5,49 +5,50 @@ description: Use when implementing, modifying, refactoring, or reviewing code.
 
 # PlanET
 
-Own routine engineering decisions. Make changes that fit the existing system and remain easy to understand, use, and modify. Apply this guidance to code, tests, scripts, configuration, and repository layout within the host's instructions and the user's scope and permissions.
+Own routine engineering decisions. Make changes that fit the existing system and stay easy to understand, use, and modify, within the host's instructions and the user's scope and permissions.
 
-## Code quality: CUPID
+## Code quality
 
-Assess the affected code through these properties, not a quota of patterns or a universal score:
+Judge the affected code by CUPID properties in context, not as a checklist:
 
-- **Composable:** Keep interfaces intention-revealing, with few required dependencies and little hidden setup or ordering knowledge.
-- **Unix philosophy:** Give each module a clear, coherent purpose from its caller's perspective; keep related behavior together rather than fragmenting it into tiny pieces.
-- **Predictable:** Make results, state changes, side effects, and failure behavior explicit and verifiable, including relevant operational limits.
-- **Idiomatic:** Follow the language, ecosystem, and repository's established conventions unless a concrete problem justifies a change.
-- **Domain-based:** Express rules, names, and module ownership in the problem domain, not generic technical wrappers.
+- **Composable:** intention-revealing interfaces, few required dependencies, little hidden setup or ordering.
+- **Unix philosophy:** each module has one coherent purpose for its callers; related behavior stays together.
+- **Predictable:** results, state changes, side effects, failures, and relevant limits are explicit and tested.
+- **Idiomatic:** the language's and repository's established conventions.
+- **Domain-based:** names, rules, and ownership come from the problem domain.
 
-## Simple design
+Resolve trade-offs with Kent Beck's simple design, in order: meaningful behavior tests, revealed intent, no duplicated knowledge, fewest elements. Fewer lines, functions, or classes are never better on their own.
 
-Use Kent Beck's simple-design rules as a trade-off order: satisfy meaningful behavior tests, reveal intent, remove duplicated knowledge, then remove unnecessary elements. Fewer classes, functions, files, or lines are not independently better; retain elements that protect the earlier goals.
+## Seven principles
 
-## Seven operating principles
+1. **Choose the suitable design pattern.** Start from the existing mechanism or a direct implementation. A new abstraction must own a present invariant, variation, external boundary, or lifecycle that the simpler approach cannot. Pattern names justify nothing.
+2. **Keep related logic together.** Give each rule and piece of state one owner. Inline private wrappers without a contract; keep domain rules, boundaries, and lifecycles regardless of caller count.
+3. **Extend before replacing.** Reuse existing extension points, state, and error semantics, including partial implementations. Replace only when a concrete limitation blocks the requested outcome and local repair cannot remove it. Report unrelated old defects instead of rewriting around them.
+4. **Think in systems.** Trace affected inputs, outputs, dependencies, state, failures, and compatibility. Check that one plausible follow-up change would stay local, without building it.
+5. **Design first and secure implementation authorization.** Present a grounded design, as a brief or a skeleton, before implementing behavior, and obtain explicit authorization for its scope. Approved work needs no repeated gate; changed outcomes, contracts, or scope need renewed alignment. Silence, corrections, rejected options, and preview clicks are not approval, and approval never covers commit, push, or deploy.
+6. **Minimize trivial interruptions.** Resolve repository facts by inspection. Ask only consequential questions that cannot be inferred, batched, each with a recommendation and trade-offs.
+7. **Use conventional, descriptive names.** Name actions and roles in domain vocabulary. Avoid vague Manager/Helper/Utils names, meaningless suffixes, and temporary markers. Preserve public APIs, upstream attribution, and meaningful names such as sha256 or ipv6.
 
-1. **Choose the suitable design pattern.** Start with the existing mechanism or a direct implementation. For a new abstraction, identify the current invariant, variation, external boundary, or lifecycle it owns and why the simpler approach is insufficient. Pattern names alone justify nothing.
-2. **Keep related logic together.** Assign behavior and state to a clear owner. Inline short private wrappers without a meaningful contract; preserve domain rules, external boundaries, lifecycles, and useful reuse regardless of caller count.
-3. **Extend before replacing.** Read the existing capability, callers, and tests. Reuse its extension point, state, and error semantics. Replace only with evidence that its contract cannot meet the requirement; avoid parallel implementations.
-4. **Think in systems.** Trace affected inputs, outputs, dependencies, state owners, failures, and compatibility. Consider one plausible follow-up change: can it stay local without copying policy or synchronizing redundant state? Preserve that seam without building the hypothetical feature.
-5. **Design first, clarify boundaries, and secure write authorization.** Present a grounded design before modifying code. Obtain explicit authorization for that design's scope; approved work needs no repeated gate, but consequential scope changes need renewed alignment. Silence, elapsed time, and mere preview interactions are not authorization.
-6. **Minimize trivial interruptions.** Resolve repository facts by inspection. Ask only about consequential choices that cannot be inferred; batch questions with a recommendation and trade-offs. Use conversation and native tools for refinements, and a visual companion only when seeing helps.
-7. **Use conventional, descriptive names.** Name actions and actual roles using domain vocabulary. Avoid vague Manager/Helper/Utils names, meaningless suffixes, model signatures, and temporary markers. Preserve established public APIs, upstream attribution, and meaningful algorithm, protocol, or version names such as sha256 and ipv6.
+## Execution
 
-## Execution contract
+Do the necessary work and nothing more: scale every step to the change, and read a reference only when its route applies.
 
-- **Inspect:** Read the relevant implementation, callers, tests, and local instructions. Map the user's outcomes to existing capabilities, including partial ones, and locate their owners and extension points. Extend these first. Any replacement must identify a concrete limitation blocking the requested outcome, why local repair is insufficient, and how compatibility is preserved; unrelated old defects do not authorize a rewrite.
-- **Design:** Replay the user's goal, observable acceptance conditions, constraints, and non-goals. Present **evidence** (existing capabilities and gaps), **change** (owners and affected contracts), **reason** (structural choices), and **verification/scope** (checks and proposed write boundary). Distinguish user decisions from agent recommendations and assumptions. Resolve consequential differences with the user; small tasks need only a few sentences. Each behavior change needs an owner and understood dependencies, state, errors, and compatibility.
-- **Authorize:** Obtain explicit write authorization for the presented design and user decisions in conversation or a confirmed visual decision. A request for adjustments or a rejected option is not approval. Reuse matching approval; changed outcomes, contracts, or scope require renewed alignment. Approval does not grant permission to commit, push, deploy, or expand scope.
-- **Implement:** Extend the authorized path. Keep policy with its owner and preserve behavior outside the request. Follow another active workflow rather than launching a competing one.
-- **Simplify:** Inspect the actual diff against CUPID and simple design. Remove unjustified layers, duplicated rules, redundant state, and misleading names. Keep valuable contracts; explain any remaining consequential trade-off with concrete evidence.
-- **Verify:** Apply [evaluation.md](references/evaluation.md) to this user task: use the project's native checks, map acceptance/preservation scenarios to real assertions, and bind evidence to the actual source revision. Fix material findings and rerun affected checks; report useful coverage, uncertainty and review limits. A review finding identifies a location, consequence, and simpler alternative. Command success is not scenario coverage or proof of maintainability.
+- **Inspect:** read the relevant implementation, callers, tests, and local instructions. Map each requested outcome to an existing capability, a gap, or bounded evidence of absence.
+- **Design:** replay the goal, acceptance conditions, constraints, and non-goals. State the evidence (capabilities and gaps), the change (owners and affected contracts), the reason (structural choices), and verification and write scope. Separate user decisions from your recommendations and assumptions. A local change inside existing contracts needs a few sentences. A change that introduces an abstraction, changes a module interface, or moves responsibility between owners needs a skeleton and a contest.
+- **Authorize:** obtain explicit approval of the design and the user's decisions.
+- **Implement:** extend the authorized path, keep policy with its owner, and preserve behavior outside the request. A consequential surprise or a change to an approved contract returns to the user. Follow an active workflow rather than starting a competing one.
+- **Simplify:** read the actual diff. Remove unjustified layers, duplicated rules, redundant state, and misleading names; keep contracts that carry meaning.
+- **Verify:** run the project's native checks. Map each acceptance and preservation scenario to a real assertion; a passing command is not scenario coverage. Bind results to the revision checked, fix material findings, and rerun affected checks.
 
-## Independent evaluation
+A review-only request stays read-only; each finding names a location, a consequence, and a simpler alternative. Report the result, the design reason that matters, verification, and limits; never invent evidence. None of this requires plan files, interviews, or per-principle reports.
 
-After code implementation, obtain a separate, read-only agent's review when the host supports it and operator/project instructions permit delegation. Give it the user decisions, exact design/scope, baseline and diff, code/callers, and check evidence; use [evaluation.md](references/evaluation.md) for measurable criteria and the handoff. It inspects the artifacts independently, not just the implementer's summary. Reconcile findings, fix within approved scope, and recheck affected evidence; scope-changing fixes return to the user. If delegation is unavailable or disallowed, disclose the limit: self-check is not independent review. Neither a reviewer verdict nor a score grants user authorization.
+## Routes
 
-These are internal habits, not mandatory documents, interviews, commits, or seven-item user reports. Group repeated evidence without hiding omissions. A review-only request stays read-only. In the final response, state the result, useful design reason, verification, and review limits; never invent evidence.
-
-## Conditional resources
-
-- Read [design.md](references/design.md) when choosing an abstraction, changing a module interface, or evaluating CUPID trade-offs.
-- Read [examples.md](references/examples.md) when deciding what to inline, preserve, extend, or include in a design brief.
-- Load the sibling `planet-visual` skill for helpful diagrams, layout previews, or visual comparisons. It is an optional local companion board, not an editor or an automatic approval pause.
+| When | Read |
+| --- | --- |
+| The change needs a skeleton, or you are a skeleton challenger | [skeleton.md](references/skeleton.md) |
+| Choosing between abstractions, or reviewing a design against CUPID | [design.md](references/design.md) |
+| Unsure what to inline, preserve, or extend, or how short a brief can be | [examples.md](references/examples.md) |
+| The user or operator asks for a full seven-principle audit | [audit.md](references/audit.md) |
+| Persisting check or audit evidence across a task | [evidence.md](references/evidence.md) |
+| A diagram, layout preview, or visual comparison would help the user | the sibling `planet-visual` skill |

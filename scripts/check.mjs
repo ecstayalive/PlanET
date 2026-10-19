@@ -4,8 +4,20 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { validateScreen } from '../skills/planet-visual/scripts/screen.mjs';
+import { loadInstructions } from '../hooks/session-start.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+
+// Context an agent loads on each task route, on top of the bootstrap. Eval cases name
+// these routes; tokens are approximated as characters / 4, which is enough to catch growth.
+const routes = {
+  small: { limit: 2000, files: ['skills/planet/SKILL.md'] },
+  skeleton: { limit: 4000, files: ['skills/planet/SKILL.md', 'skills/planet/references/skeleton.md'] },
+  review: { limit: 4000, files: ['skills/planet/SKILL.md', 'skills/planet/references/design.md'] },
+  visual: { limit: 4000, files: ['skills/planet/SKILL.md', 'skills/planet-visual/SKILL.md'] },
+  audit: { limit: 6000, files: ['skills/planet/SKILL.md', 'skills/planet/references/audit.md'] },
+};
+const approximateTokens = text => Math.ceil(text.length / 4);
 const files = [];
 
 async function inspect(directory) {
@@ -71,4 +83,22 @@ try {
   assert.fail(`Invalid example screen JSON: ${error.message}`);
 }
 validateScreen(exampleScreen);
+
+const bootstrapTokens = approximateTokens(loadInstructions());
+const routeTokens = {};
+for (const [route, { limit, files: routeFiles }] of Object.entries(routes)) {
+  const bodies = await Promise.all(routeFiles.map(path => readFile(resolve(root, path), 'utf8')));
+  routeTokens[route] = bootstrapTokens + approximateTokens(bodies.join(''));
+  assert.ok(routeTokens[route] <= limit, `Route ${route} loads ~${routeTokens[route]} tokens; budget is ${limit}`);
+}
+let cases;
+try {
+  cases = JSON.parse(await readFile(resolve(root, 'evals/cases.json'), 'utf8'));
+} catch (error) {
+  assert.fail(`Invalid eval cases JSON: ${error.message}`);
+}
+for (const { id, route } of cases) assert.ok(route in routes, `Eval case ${id} names unknown route: ${route}`);
+
+const budgetSummary = Object.entries(routeTokens).map(([route, tokens]) => `${route} ~${tokens}/${routes[route].limit}`).join(', ');
 console.log(`Checked ${files.length} files: manifests, skill metadata, references, JavaScript syntax, and visual example.`);
+console.log(`Context budgets (approximate tokens): ${budgetSummary}.`);
